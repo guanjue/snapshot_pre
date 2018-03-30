@@ -1,0 +1,4 @@
+ideas_label/LSK.ideas.bed	LSK
+ideas_label/CMP.ideas.bed	CMP
+ideas_label/MEP.ideas.bed	MEP
+ideas_label/GMP.ideas.bed	GMP
