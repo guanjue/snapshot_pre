@@ -84,8 +84,10 @@ bash runall.sh
 
 ## The heatmap for index set
 ##### Average atac-seq signal heatmap (left). Most abundant functional state heatmap (right).
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png" width="400"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png" width="350"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png" width="350"/> 
 
+##### Functional state epigenetic patterns.
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/input_data/function_label/functional_state_epigenetic_pattern.png" width="200"/>
 
 ## The cell differentiation tree for index set 6
 ##### Average signal tree (left). Most abundant functional state tree (right).
