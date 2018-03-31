@@ -147,7 +147,6 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 		elif method == 'window':
 			### used bedtools map to get the average signal of each peak
 			call('bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
-			call('cp ' + mark_bed_file+'.tmp01.txt' + ' ' + mark_bed_file+'.tmp01.od.txt', shell=True)
 			### convert bedtools window output to matrix of pk and intersect function label info (intersect region; midpoint dist; TF peak length)
 			data_info_matrix = function_label_info(mark_bed_file+'.tmp01.txt', 4, 9, 2, 6)
 			### get peak's function labels based on intersect region; midpoint dist; TF peak length

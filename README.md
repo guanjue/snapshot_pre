@@ -32,10 +32,10 @@ atac_sig/GMP.atac.sig.bed	GMP
 ```
 function_list.txt
 head function_list.txt 
-ideas_label/LSK.ideas.bed	LSK
-ideas_label/CMP.ideas.bed	CMP
-ideas_label/MEP.ideas.bed	MEP
-ideas_label/GMP.ideas.bed	GMP
+function_label/LSK.ideas.bed	LSK
+function_label/CMP.ideas.bed	CMP
+function_label/MEP.ideas.bed	MEP
+function_label/GMP.ideas.bed	GMP
 ```
 
 ###### The cell type differentiation tree: Each row represent one edge in the ell type differentiation tree. The 1st cell type is the progenitor cell type and the 2nd cell type is the differentiated cell type
