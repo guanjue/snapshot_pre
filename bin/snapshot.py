@@ -429,7 +429,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	peak_signal_column = 5
 	output_file_signal = merge_pk_filename + '.signal.matrix.txt'
 	signal_col = 5
-	sort_sigbed = 'F'
+	sort_sigbed = 'T'
 	method = 'map'
 	print('get signal matrix...')
 	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, signal_col)
@@ -437,7 +437,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	### get function label matrix
 
 	output_file_function = merge_pk_filename + '.function.matrix.txt'
-	sort_sigbed = 'F'
+	sort_sigbed = 'T'
 	print('get function matrix...')
 	if function_method == 'mostfreq':
 		peak_function_column = 1
