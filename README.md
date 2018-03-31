@@ -1,14 +1,14 @@
 # snapshot
 
 
-### Dependence:
+## Dependence:
 #### Python/2.7
 ###### numpy; subprocess; collections; getopt; sys; os
 #### R
 ###### ggplot2; pheatmap; igraph; networkD3
 
-### input data
-###### The cell type peak binary label file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
+## Input data
+##### The cell type peak binary label file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
 ###### The peak binary label of each cell type in bed format is in the 'atac_pk/' folder
 ```
 peak_list.txt
@@ -19,7 +19,7 @@ atac_pk/MEP.pk.bed	MEP
 atac_pk/GMP.pk.bed	GMP
 ```
 
-###### The cell type peak signal file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
+##### The cell type peak signal file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
 ###### The signal track of each cell type in bed format is in the 'atac_sig/' folder
 ```
 signal_list.txt
@@ -30,7 +30,7 @@ atac_sig/MEP.atac.sig.bed	MEP
 atac_sig/GMP.atac.sig.bed	GMP
 ```
 
-###### The cell type functional state file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
+##### The cell type functional state file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
 ###### The functional state label of each cell type in bed format is in the 'function_label/' folder
 ```
 function_list.txt
@@ -41,7 +41,7 @@ function_label/MEP.ideas.bed	MEP
 function_label/GMP.ideas.bed	GMP
 ```
 
-###### The cell type differentiation tree: Each row represent one edge in the ell type differentiation tree. The 1st cell type is the progenitor cell type and the 2nd cell type is the differentiated cell type
+##### The cell type differentiation tree: Each row represent one edge in the ell type differentiation tree. The 1st cell type is the progenitor cell type and the 2nd cell type is the differentiated cell type
 ```
 cd_tree.txt 
 head cd_tree.txt
@@ -50,7 +50,7 @@ CMP,MEP
 CMP,GMP
 ```
 
-###### The functional state color list
+##### The functional state color list
 ```
 head function_color_list.txt
 36	35	194,7,153	250,151,3
@@ -65,15 +65,15 @@ head function_color_list.txt
 27	26	219,8,0	241,198,171
 ```
 
-### snapshot
-###### change the folder names in 'runall.sh'
+## RUN snapshot
+##### For command line version, change the folder names in 'runall.sh', the run 'runall.sh'
 ```
 script_folder='/snapshot_script_folder/snapshot/bin/'
 input_folder='/snapshot_script_folder/snapshot/test_data/input_data/'
 output_folder='/snapshot_script_folder/snapshot/test_data/output_result/'
 ```
 
-###### run snapshot
+##### run snapshot
 ```
 bash runall.sh
 ```
