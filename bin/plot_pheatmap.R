@@ -15,7 +15,7 @@ smallnum = as.numeric(args[8])
 color_heatmap = function(color_matrix, high_color, low_color, format, outputname){
 	library(pheatmap)
 	format(outputname, width = 1000, height = 1000) ### output name
-	par(mar=c(5,0.5,0.5,0.5) ### set heatmap margins
+	par(mar=c(5,0.5,0.5,0.5)) ### set heatmap margins
 	### plot pheatmap
 	my_colorbar=colorRampPalette(c(low_color, high_color))(n = 128)
 	col_breaks = c(seq(0, 2000,length=33))
