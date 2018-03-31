@@ -91,7 +91,7 @@ input_folder='/snapshot_script_folder/snapshot/test_data/input_data/'
 output_folder='/snapshot_script_folder/snapshot/test_data/output_result/'
 ```
 
-##### run snapshot
+##### run Snapshot
 ```
 bash runall.sh
 ```
