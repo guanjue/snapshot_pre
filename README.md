@@ -83,7 +83,7 @@ CMP,GMP
 27	26	219,8,0	241,198,171
 ```
 
-## RUN snapshot
+## RUN Snapshot
 ##### For command line version, change the folder names in 'runall.sh', the run 'runall.sh'
 ```
 script_folder='/snapshot_script_folder/snapshot/bin/'
