@@ -9,7 +9,7 @@
 
 
 ### command to run snapshot
-'''
+```
 bash runall.sh
-'''
+```
 
