@@ -8,7 +8,15 @@
 ###### ggplot2; pheatmap; igraph; networkD3
 
 
-### command to run snapshot
+### snapshot
+###### change the folder names in 'runall.sh'
+```
+script_folder='/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/'
+input_folder='/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/input_data/'
+output_folder='/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/output_result/'
+```
+
+###### run snapshot
 ```
 bash runall.sh
 ```
