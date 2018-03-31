@@ -81,6 +81,19 @@ bash runall.sh
 
 ## Output results
 ### All output files will be to the 'output_folder'
+
+## The heatmap for index set
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png" width="400"/> 
+
+
+## The cell differentiation tree for index set 6
+##### Cell type differentiation tree
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/6.signal_list.txt0_1_1_1.tree.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/6.function_list.txt0_1_1_1.tree.png" width="400"/> 
+
+##### Cell type differentiation mean signal violin plot & functional state bar plot
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_violin/6.0_1_1_1.violin.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_bar/6.0_1_1_1.bar.png" width="400"/> 
+
+
 ##### Merged peak file (bed format)
 ```
 >>> head atac_4cell.sort.bed
@@ -159,18 +172,6 @@ chr1_12985993_12986340	0_0_0_1	0	5	10	20
 chr1_7589470_7589648	0_0_0_1	0	0	0	0
 
 ```
-
-## The heatmap for index set
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png" width="400"/> 
-
-
-## The cell differentiation tree for index set 6
-##### Cell type differentiation tree
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/6.signal_list.txt0_1_1_1.tree.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/6.function_list.txt0_1_1_1.tree.png" width="400"/> 
-
-##### Cell type differentiation mean signal violin plot & functional state bar plot
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_violin/6.0_1_1_1.violin.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_bar/6.0_1_1_1.bar.png" width="400"/> 
-
 
 
 
