@@ -161,6 +161,7 @@ chr1_7589470_7589648	0_0_0_1	0	0	0	0
 ```
 
 
+![alt text](https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png)
 
 
 
