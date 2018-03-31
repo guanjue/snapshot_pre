@@ -133,7 +133,7 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 		#######
 		### sort bianry label bed files
 		if sort_sigbed == 'T':
-			call('sort -k1,1 -V -s -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
+			call('sort -k1,1 -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
 		else:
 			call('cp ' + mark_bed_file + ' ' + mark_bed_file+'.sort.bed', shell=True)
 		#######
@@ -488,8 +488,8 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	### plot violin
 	print('plot signal violin plot...')
 	call('if [ ! -d signal_violin ]; then mkdir signal_violin; fi', shell=True)
-	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.sig.txt' + ' ' + signal_list + ' ' + 'violin.pdf' , shell=True)
-	call('mv *violin.pdf signal_violin/', shell=True)
+	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.sig.txt' + ' ' + signal_list + ' ' + 'violin.png' , shell=True)
+	call('mv *violin.png signal_violin/', shell=True)
 
 
 	###### for functional state
@@ -506,8 +506,8 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 		### plot bar
 		print('plot functional state barplot...')
 		call('if [ ! -d fun_bar ]; then mkdir fun_bar; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_fun_bar.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + function_color_file + ' ' + 'bar.pdf' , shell=True)
-		call('mv *bar.pdf fun_bar/', shell=True)
+		call('time Rscript ' + script_folder + 'plot_fun_bar.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + function_color_file + ' ' + 'bar.png' , shell=True)
+		call('mv *bar.png fun_bar/', shell=True)
 	elif function_method == 'mean':
 		### plot functional signal
 		print('use plot_pheatmap to plot function mean signal heatmap...')
@@ -520,8 +520,8 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 		### plot violin
 		print('plot functional state violin plot...')
 		call('if [ ! -d fun_bar ]; then mkdir fun_bar; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + 'bar.pdf' , shell=True)
-		call('mv *violin.pdf fun_bar/', shell=True)
+		call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + 'bar.png' , shell=True)
+		call('mv *violin.png fun_bar/', shell=True)
 
 
 	###### mv all output to output folder
