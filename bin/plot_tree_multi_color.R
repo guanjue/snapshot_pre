@@ -95,9 +95,9 @@ for (i in seq(1,dim(signal_matrix_color)[1])){
 	### sort colnames by tree nodes id
 	match_id = match(tree_names, colname)
 	V(tree.igraph)$color = value_col[match_id]
-	V(tree.igraph)$size = 50
+	V(tree.igraph)$size = 25
 
-	png(paste(toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 1200, height = 1200)
+	png(paste(toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 800, height = 800)
 	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }
