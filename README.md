@@ -82,7 +82,7 @@ bash runall.sh
 ## Output results
 ### All output files will be to the 'output_folder'
 
-## The heatmap for index set
+## The heatmap for index set: Average signal tree (left). Most abundant functional state tree (right).
 <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png" width="400"/> 
 
 
