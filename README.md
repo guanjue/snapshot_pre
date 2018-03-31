@@ -82,12 +82,13 @@ bash runall.sh
 ## Output results
 ### All output files will be to the 'output_folder'
 
-## The heatmap for index set: Average signal tree (left). Most abundant functional state tree (right).
+## The heatmap for index set
+##### Average atac-seq signal heatmap (left). Most abundant functional state heatmap (right).
 <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png" width="400"/> 
 
 
 ## The cell differentiation tree for index set 6
-##### Cell type differentiation tree
+##### Average signal tree (left). Most abundant functional state tree (right).
 <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/6.signal_list.txt0_1_1_1.tree.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/6.function_list.txt0_1_1_1.tree.png" width="400"/> 
 
 ##### Cell type differentiation mean signal violin plot & functional state bar plot
