@@ -11,9 +11,9 @@
 ### snapshot
 ###### change the folder names in 'runall.sh'
 ```
-script_folder='/snapshot_script_folder/snapshot/bin/'
-input_folder='/snapshot_script_folder/snapshot/test_data/input_data/'
-output_folder='/snapshot_script_folder/snapshot/test_data/output_result/'
+script_folder = '/snapshot_script_folder/snapshot/bin/'
+input_folder  = '/snapshot_script_folder/snapshot/test_data/input_data/'
+output_folder = '/snapshot_script_folder/snapshot/test_data/output_result/'
 ```
 
 ###### run snapshot
