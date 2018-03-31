@@ -160,8 +160,13 @@ chr1_7589470_7589648	0_0_0_1	0	0	0	0
 
 ```
 
+## The heatmap for index set
+![alt-text-1](https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.meansig.png "title-1") ![alt-text-2](https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png "title-2")
 
-![alt text](https://github.com/guanjue/snapshot/blob/master/test_data/output_result/atac_4cell.indexset_fun.png)
+
+## The cell differentiation tree for index set 6
+![alt-text-1](https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/6.signal_list.txt0_1_1_1.tree.png "title-1") ![alt-text-3](https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/6.function_list.txt0_1_1_1.tree.png "title-2")
+
 
 
 
