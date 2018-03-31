@@ -397,28 +397,8 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 
 ################################################################################################
 def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2, sigscale, sigsmallnum, function_list, function_method, function_color_file, cd_tree, input_folder, output_folder, script_folder):
-	#input_folder = '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/input_data/'
-	#output_folder = '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/output_result/'
-	#script_folder = '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/'
-
 	### set working directory
 	os.chdir(input_folder)
-
-	#peak_list = 'peak_list.txt'
-	#signal_list = 'signal_list.txt'
-	#function_list = 'function_list.txt'
-
-	#merge_pk_filename = 'atac_4cell'
-
-	#count_threshold = 1
-	#function_method = 'mostfreq'
-	#siglog2 = 'F'
-	#sigscale = 'F'
-	#sigsmallnum = 0.01
-
-
-	#cd_tree = 'cd_tree.txt'
-	#function_color_file = 'function_color_list.txt'
 
 	signal_high_color = 'red'
 	signal_low_color = 'white'
@@ -479,7 +459,8 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	###### for signal
 	### plot heatmaps 
 	print('use pheatmap to plot signal index & index set heatmap...')
-	call('time Rscript ' + script_folder + 'plot_pheatmap.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	#call('time Rscript ' + script_folder + 'plot_pheatmap.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot tree
 	print('plot mean signal of cell differentiation tree')
 	call('if [ ! -d signal_tree ]; then mkdir signal_tree; fi', shell=True)
