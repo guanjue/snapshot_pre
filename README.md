@@ -9,6 +9,7 @@
 
 ### input data
 ###### The cell type peak binary label file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
+###### The peak binary label of each cell type in bed format is in the 'atac_pk/' folder
 ```
 peak_list.txt
 head peak_list.txt 
@@ -19,6 +20,7 @@ atac_pk/GMP.pk.bed	GMP
 ```
 
 ###### The cell type peak signal file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
+###### The signal track of each cell type in bed format is in the 'atac_sig/' folder
 ```
 signal_list.txt
 head signal_list.txt 
@@ -29,6 +31,7 @@ atac_sig/GMP.atac.sig.bed	GMP
 ```
 
 ###### The cell type functional state file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
+###### The functional state label of each cell type in bed format is in the 'function_label/' folder
 ```
 function_list.txt
 head function_list.txt 
