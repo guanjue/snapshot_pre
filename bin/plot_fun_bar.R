@@ -77,7 +77,7 @@ for (k in c(1:length(index_set_id_uniq_sort))){
 	colnames(counts_matrix_t) = colnames(signal_matrix)
 
 	### save figure
-	png(paste(toString(k-1), '.', toString(index_set_id_uniq_sort[k]), '.', cREs_IDEASpro_outfile, sep=''))
+	png(paste(toString(k-1), '.', toString(index_set_id_uniq_sort[k]), '.', cREs_IDEASpro_outfile, sep=''), dim(signal_matrix)[2]*100+5, dim(signal_matrix)[2]*100+5)
 	barplot(counts_matrix_t, col=my_colorbar)
 	dev.off()
 }
