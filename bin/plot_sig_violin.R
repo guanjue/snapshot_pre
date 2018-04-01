@@ -22,6 +22,7 @@ signal_matrix_od = as.matrix(read.table(index_matrix_signal_inputfile, header=FA
 
 ### extract signal matrix without info
 signal_matrix = signal_matrix_od[ , c(3:dim(signal_matrix_od)[2]) ]
+signal_matrix_bed_info = signal_matrix_od[ , c(1,2)]
 ### convert to numeric matrix
 class(signal_matrix) = 'numeric'
 ###### read colnames file
@@ -40,12 +41,15 @@ index_set_id_uniq_sort = sort(index_set_id_uniq)
 for (k in c(1:length(index_set_id_uniq))){
 	print(paste('index set', toString(index_set_id_uniq[k])))
 	signal_matrix_tmp = signal_matrix[index_set_id==index_set_id_uniq[k],]
+	signal_matrix_bed_info_tmp = signal_matrix_bed_info[index_set_id==index_set_id_uniq[k],]
 	signal_table_df = c()
 	for (i in c(1:dim(signal_matrix_tmp)[2])){
 		signal_table_id = rep(colname[i],dim(signal_matrix_tmp)[1])
 		signal_table_tmp = data.frame(signal_table_id, signal_matrix_tmp[,i])
 		signal_table_df = rbind(signal_table_df, signal_table_tmp)
 	}
+	### save bed files
+	write.table(signal_matrix_tmp, file = paste(toString(k-1), '.', toString(index_set_id_uniq[k]), '.index_sed.bed', sep=''), quote = FALSE, sep='\t', col.names = FALSE, row.names = FALSE)
 	### save figure
 	colnames(signal_table_df) = c('celltype', 'signal')
 	### keep the x-axis order

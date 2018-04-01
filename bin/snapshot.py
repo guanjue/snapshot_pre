@@ -467,11 +467,12 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.meansig.txt' + ' ' + cd_tree + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	call('mv *tree.png signal_tree/', shell=True)
 	### plot violin
-	print('plot signal violin plot...')
+	print('plot signal violin plot & create index set bed files ...')
 	call('if [ ! -d signal_violin ]; then mkdir signal_violin; fi', shell=True)
 	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.sig.txt' + ' ' + signal_list + ' ' + 'violin.png' , shell=True)
 	call('mv *violin.png signal_violin/', shell=True)
-
+	call('if [ ! -d index_set_bed ]; then mkdir index_set_bed; fi', shell=True)
+	call('mv *.index_sed.bed index_set_bed/', shell=True)
 
 	###### for functional state
 	### plot heatmaps functional
@@ -519,7 +520,8 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 
 	### index set merged figures
 	call('mv *.png ' + output_folder, shell=True)
-	### individual index set figures
+	### individual index set figures & bed files
+	call('mv index_set_bed ' + output_folder, shell=True)
 	call('mv signal_tree ' + output_folder, shell=True)
 	call('mv signal_violin ' + output_folder, shell=True)
 	call('mv fun_tree ' + output_folder, shell=True)
