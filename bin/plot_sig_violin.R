@@ -23,6 +23,7 @@ signal_matrix_od = as.matrix(read.table(index_matrix_signal_inputfile, header=FA
 ### extract signal matrix without info
 signal_matrix = signal_matrix_od[ , c(3:dim(signal_matrix_od)[2]) ]
 signal_matrix_bed_info = signal_matrix_od[ , c(1,2)]
+signal_matrix_bed_info = t( apply(signal_matrix_bed_info, 1, function(x) c(unlist(strsplit(x[1], '_')),x[2])) )
 ### convert to numeric matrix
 class(signal_matrix) = 'numeric'
 ###### read colnames file
