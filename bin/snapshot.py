@@ -472,7 +472,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.sig.txt' + ' ' + signal_list + ' ' + 'violin.png' , shell=True)
 	call('mv *violin.png signal_violin/', shell=True)
 	call('if [ ! -d index_set_bed ]; then mkdir index_set_bed; fi', shell=True)
-	call('mv *.index_sed.bed index_set_bed/', shell=True)
+	call('mv *.index_set.bed index_set_bed/', shell=True)
 
 	###### for functional state
 	### plot heatmaps functional

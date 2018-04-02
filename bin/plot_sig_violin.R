@@ -49,7 +49,7 @@ for (k in c(1:length(index_set_id_uniq))){
 		signal_table_df = rbind(signal_table_df, signal_table_tmp)
 	}
 	### save bed files
-	write.table(signal_matrix_bed_info_tmp, file = paste(toString(k-1), '.', toString(index_set_id_uniq[k]), '.index_sed.bed', sep=''), quote = FALSE, sep='\t', col.names = FALSE, row.names = FALSE)
+	write.table(signal_matrix_bed_info_tmp, file = paste(toString(k-1), '.', toString(index_set_id_uniq[k]), '.index_set.bed', sep=''), quote = FALSE, sep='\t', col.names = FALSE, row.names = FALSE)
 	### save figure
 	colnames(signal_table_df) = c('celltype', 'signal')
 	### keep the x-axis order
