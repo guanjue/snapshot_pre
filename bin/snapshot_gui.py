@@ -513,6 +513,9 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	### mv merge peak file
 	call('mv ' + merge_pk_filename + '.sort.bed' + ' ' + output_folder, shell=True)
 	### mv matrix
+	call('mv ' + merge_pk_filename + '.index.matrix.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.signal.matrix.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.function.matrix.txt' + ' ' + output_folder, shell=True)
 	call('mv ' + merge_pk_filename + '.meansig.txt' + ' ' + output_folder, shell=True)
 	call('mv ' + merge_pk_filename + '.sig.txt' + ' ' + output_folder, shell=True)
 	call('mv ' + merge_pk_filename + '.indexset_fun.txt' + ' ' + output_folder, shell=True)
@@ -526,11 +529,6 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	call('mv signal_violin ' + output_folder, shell=True)
 	call('mv fun_tree ' + output_folder, shell=True)
 	call('mv fun_bar ' + output_folder, shell=True)
-
-	### rm tmp files
-	call('rm ' + merge_pk_filename + '.index.matrix.txt', shell=True)
-	call('rm ' + merge_pk_filename + '.signal.matrix.txt', shell=True)
-	call('rm ' + merge_pk_filename + '.function.matrix.txt', shell=True)
 
 
 ##############################################
