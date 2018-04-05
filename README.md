@@ -25,8 +25,11 @@
 
 
 ## Install Snapshot
-#### run the INSTALL.sh command
+#### (1) clone the github repository 
+#### (2) run the INSTALL.sh command
 ```
+git clone https://github.com/guanjue/snapshot.git
+cd snapshot
 bash INSTALL.sh
 ```
 
