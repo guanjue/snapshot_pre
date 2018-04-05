@@ -92,14 +92,15 @@ CMP,GMP
 ```
 
 ## RUN Snapshot
-##### For command line version, change the folder names in 'runall.sh', the run 'runall.sh'
+##### (1) for command line version, change the folder names (script_folder, input_folder, output_folder) in 'runall.sh'
 ```
-script_folder='/snapshot_script_folder/snapshot/bin/'
-input_folder='/snapshot_script_folder/snapshot/test_data/input_data/'
-output_folder='/snapshot_script_folder/snapshot/test_data/output_result/'
+head -4 runall.sh 
+##################################
+script_folder='/Users/universe/Documents/2018_BG/snapshot/bin/'
+input_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/input_data/'
+output_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/output_result/'
 ```
-
-##### run Snapshot
+##### (2) use 'runall.sh' script to run Snapshot
 ```
 bash runall.sh
 ```
