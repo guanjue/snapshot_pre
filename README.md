@@ -17,13 +17,18 @@
 
 ## Dependence:
 #### Python/2.7
-###### numpy; subprocess; collections; getopt; sys; os
+###### numpy
 #### R
 ###### ggplot2; pheatmap; igraph; networkD3
+#### bedtools
+######(http://bedtools.readthedocs.io/en/latest/content/installation.html)
 
 
-
-
+## Install Snapshot
+#### run the INSTALL.sh command
+```
+bash INSTALL.sh
+```
 
 ## Input data
 ##### The cell type peak binary label file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
