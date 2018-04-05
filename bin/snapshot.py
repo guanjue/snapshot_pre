@@ -505,6 +505,8 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 		call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + 'bar.png' , shell=True)
 		call('mv *violin.png fun_bar/', shell=True)
 
+	###### plot index_count density plot
+	call('time Rscript ' + script_folder + 'plot_density.R ' + merge_pk_filename + '.index.matrix.txt' + ' ' + str(count_threshold) , shell=True)
 
 	###### mv all output to output folder
 	call('if [ -d ' + output_folder + ' ]; then rm -r ' + output_folder + '; mkdir ' + output_folder + '; fi', shell=True)
