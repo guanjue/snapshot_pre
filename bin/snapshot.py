@@ -143,7 +143,7 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 			call(script_folder + 'bedtools2/bin/' + 'bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'map':
 			### used bedtools map to get the average signal of each peak
-			call(script_folder + 'bedtools2/bin/' + 'bedtools map -c ' + str(signal_col) + ' -null 0 -F 0.5 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call(script_folder + 'bedtools2/bin/' + 'bedtools map -c ' + str(signal_col) + ' -null 0 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'window':
 			### used bedtools map to get the average signal of each peak
 			call(script_folder + 'bedtools2/bin/' + 'bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
