@@ -1,6 +1,6 @@
 ### install python dependence
-sudo pip install --upgrade pip
-sudo pip install --upgrade numpy
+pip install --upgrade pip
+pip install --upgrade numpy
 
 ### install R dependence
 Rscript bin/install_R.R
