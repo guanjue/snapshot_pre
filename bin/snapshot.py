@@ -390,6 +390,8 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 		index_signal_matrix = index_set_funcion_mean_signal_info['index_signal_matrix']
 		write2d_array(index_set_funcion_mean_signal_matrix, merge_pk_filename+'.indexset_fun.txt')
 		write2d_array(index_signal_matrix, merge_pk_filename+'.fun.txt')	
+	else:
+		print('ERROR: get index_set most freqent functional state matrix...METHOD not found!!!')
 	print('get index_set most freqent functional state matrix...DONE')
 
 
@@ -458,7 +460,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	############ plot figures
 	###### for signal
 	### plot heatmaps 
-	print('use pheatmap to plot signal index & index set heatmap...')
+	print('use plot_rect to plot signal index & index set heatmap...')
 	#call('time Rscript ' + script_folder + 'plot_pheatmap.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot tree

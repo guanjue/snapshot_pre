@@ -115,7 +115,7 @@ def get_cRE_function_state(data_info_matrix, id_col, lb_col, cover_col, middist_
 
 ################################################################################################
 ### get index/signal matrix
-def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, sort_sigbed, signal_col=None):
+def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, sort_sigbed, script_folder, signal_col=None):
 	### sort input bed files
 	sort_bed_file = peak_bed + '.sort.bed'
 	call('cp ' + sort_bed_file + ' ' + output_file, shell=True)
@@ -140,13 +140,13 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 		### use bedtools to generate the index/signal matrix
 		if method == 'intersect':
 			### used bedtools intersect to get the binary label of each peak
-			call('bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call(script_folder + 'bedtools2/bin/' + 'bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'map':
 			### used bedtools map to get the average signal of each peak
-			call('bedtools map -c ' + str(signal_col) + ' -null 0 -F 0.5 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call(script_folder + 'bedtools2/bin/' + 'bedtools map -c ' + str(signal_col) + ' -null 0 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'window':
 			### used bedtools map to get the average signal of each peak
-			call('bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call(script_folder + 'bedtools2/bin/' + 'bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
 			### convert bedtools window output to matrix of pk and intersect function label info (intersect region; midpoint dist; TF peak length)
 			data_info_matrix = function_label_info(mark_bed_file+'.tmp01.txt', 4, 9, 2, 6)
 			### get peak's function labels based on intersect region; midpoint dist; TF peak length
@@ -161,7 +161,7 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 
 ################################################################################################
 ### get merged peaks
-def merge_pk(peak_list, merge_pk_filename):
+def merge_pk(peak_list, merge_pk_filename, script_folder):
 	import os.path
 	import os
 	cwd = os.getcwd()
@@ -176,7 +176,7 @@ def merge_pk(peak_list, merge_pk_filename):
 	call('sort -k1,1 -k2,2n all_pk.bed > all_pk.sort.bed', shell=True)
 	### merge peak
 	outputfile_name = merge_pk_filename + '.sort.bed'
-	call('bedtools merge -i all_pk.sort.bed > ' + outputfile_name, shell=True)
+	call(script_folder + 'bedtools2/bin/' + 'bedtools merge -i all_pk.sort.bed > ' + outputfile_name, shell=True)
 	### add pk id
 	call('cat ' + outputfile_name + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1, $2, $3, $1"_"$2"_"$3}\' > ' + outputfile_name + '.tmp.txt', shell=True)
 	call('mv ' + outputfile_name + '.tmp.txt ' + outputfile_name, shell=True)
@@ -389,7 +389,9 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 		index_set_vector = index_set_funcion_mean_signal_info['index_set_vector']
 		index_signal_matrix = index_set_funcion_mean_signal_info['index_signal_matrix']
 		write2d_array(index_set_funcion_mean_signal_matrix, merge_pk_filename+'.indexset_fun.txt')
-		write2d_array(index_signal_matrix, merge_pk_filename+'.fun.txt')	
+		write2d_array(index_signal_matrix, merge_pk_filename+'.fun.txt')
+	else:
+		print('ERROR: get index_set most freqent functional state matrix...METHOD not found!!!')
 	print('get index_set most freqent functional state matrix...DONE')
 
 
@@ -412,7 +414,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 
 	################################################################################################
 	###### merge peak bed files
-	merge_pk_name = merge_pk(peak_list, merge_pk_filename)
+	merge_pk_name = merge_pk(peak_list, merge_pk_filename, script_folder)
 	print('merged peak generated: ' + merge_pk_name + '... Done')
 
 	################################################################################################
@@ -423,7 +425,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	sort_sigbed = 'T'
 	method = 'intersect'
 	print('get binary matrix...')
-	get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed)
+	get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed, script_folder)
 
 	### get signal matrix
 	peak_signal_column = 5
@@ -432,7 +434,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	sort_sigbed = 'T'
 	method = 'map'
 	print('get signal matrix...')
-	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, signal_col)
+	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
 
 	### get function label matrix
 
@@ -442,12 +444,12 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	if function_method == 'mostfreq':
 		peak_function_column = 1
 		method = 'window'
-		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed)
+		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
 	elif function_method == 'mean':
 		peak_function_column = 5
 		signal_col = 5
 		method = 'map'
-		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, signal_col)
+		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder, signal_col)
 
 
 	################################################################################################
@@ -458,7 +460,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	############ plot figures
 	###### for signal
 	### plot heatmaps 
-	print('use pheatmap to plot signal index & index set heatmap...')
+	print('use plot_rect to plot signal index & index set heatmap...')
 	#call('time Rscript ' + script_folder + 'plot_pheatmap.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot tree
@@ -535,7 +537,17 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 ##############################################
 
 def easy_snapshot(count_threshold, siglog2, sigscale, sigsmallnum, function_method, input_folder, output_folder, script_folder):
-	snapshot('peak_list.txt', 'snapshot', count_threshold, 'signal_list.txt', siglog2, sigscale, sigsmallnum, 'function_list.txt', 'function_method', 'function_color_list.txt', 'cd_tree.txt', input_folder, output_folder, script_folder)
+	snapshot('peak_list.txt', 'snapshot', count_threshold, 'signal_list.txt', siglog2, sigscale, sigsmallnum, 'function_list.txt', 'mostfreq', 'function_color_list.txt', 'cd_tree.txt', input_folder, output_folder, script_folder)
+
+
+import getopt
+import sys
+def main(argv):
+	easy_snapshot(1, 'F', 'F', 0.0, 'mostfreq', '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/input_data/', '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/output_result/', '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/')
+	#snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2, sigscale, sigsmallnum, function_list, function_method, function_color_file, cd_tree, input_folder, output_folder, script_folder)
+
+if __name__=="__main__":
+        main(sys.argv[1:])
 
 
 

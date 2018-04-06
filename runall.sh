@@ -1,7 +1,7 @@
 ##################################
-script_folder='/Users/universe/Documents/2018_BG/snapshot/bin/'
-input_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/input_data/'
-output_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/output_result/'
+script_folder='/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/'
+input_folder='/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/input_data/'
+output_folder='/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/output_result/'
 
 
 ### run snapshot (CORE!!!)
