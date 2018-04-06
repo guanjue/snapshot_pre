@@ -1,17 +1,21 @@
+set -e;
 BT=${BT-../../bin/bedtools}
+
+FAILURES=0;
 
 check()
 {
 	if diff $1 $2; then
     	echo ok
-		return 1
+
 	else
-    	echo fail
-		return 0
+    	FAILURES=$(expr $FAILURES + 1);
+		echo fail
+
 	fi
 }
 
-echo "    fisher.t1...\c"
+echo -e "    fisher.t1...\c"
 echo \
 "# Number of query intervals: 3
 # Number of db intervals: 2
@@ -32,7 +36,7 @@ check obs exp
 rm obs exp
 
 
-echo "    fisher.t2...\c"
+echo -e "    fisher.t2...\c"
 echo \
 "# Number of query intervals: 3
 # Number of db intervals: 2
@@ -53,7 +57,7 @@ check obs exp
 rm obs exp
 
 
-echo "    fisher.t3...\c"
+echo -e "    fisher.t3...\c"
 echo \
 "# Number of query intervals: 4
 # Number of db intervals: 2
@@ -68,13 +72,13 @@ echo \
 #_________________________________________
 # p-values for fisher's exact test
 left	right	two-tail	ratio
-1	1	1	nan" > exp
+1	1	1	-nan" > exp
 $BT fisher -a a_merge.bed -b b.bed -g t.60.genome > obs
 check obs exp
 rm obs exp
 
 
-echo "    fisher.t4...\c"
+echo -e "    fisher.t4...\c"
 echo \
 "# Number of query intervals: 3
 # Number of db intervals: 2
@@ -93,3 +97,4 @@ left	right	two-tail	ratio
 $BT fisher -a a_merge.bed -b b.bed -g t.60.genome -m > obs
 check obs exp
 rm obs exp
+[[ $FAILURES -eq 0 ]] || exit 1;

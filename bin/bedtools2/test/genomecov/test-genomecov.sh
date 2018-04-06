@@ -1,11 +1,15 @@
+set -e;
 BT=${BT-../../bin/bedtools}
+
+FAILURES=0;
 
 check()
 {
 	if diff $1 $2; then
     	echo ok
 	else
-    	echo fail
+    	FAILURES=$(expr $FAILURES + 1);
+		echo fail
 	fi
 }
 
@@ -18,13 +22,15 @@ samtools view -Sb one_block.sam > one_block.bam 2>/dev/null
 samtools view -Sb two_blocks.sam > two_blocks.bam 2>/dev/null
 samtools view -Sb three_blocks.sam > three_blocks.bam 2>/dev/null
 samtools view -Sb sam-w-del.sam > sam-w-del.bam 2>/dev/null
+samtools view -Sb pair-chip.sam > pair-chip.bam 2>/dev/null
+samtools view -Sb chip.sam > chip.bam 2>/dev/null
 
 
 
 ##################################################################
 #  Test three blocks without -split
 ##################################################################
-echo "    genomecov.t1...\c"
+echo -e "    genomecov.t1...\c"
 echo \
 "chr1	0	50	1" > exp
 $BT genomecov -ibam three_blocks.bam -bg > obs
@@ -35,7 +41,7 @@ rm obs exp
 ##################################################################
 #  Test three blocks with -split
 ##################################################################
-echo "    genomecov.t2...\c"
+echo -e "    genomecov.t2...\c"
 echo \
 "chr1	0	10	1
 chr1	20	30	1
@@ -48,7 +54,7 @@ rm obs exp
 ##################################################################
 #  Test three blocks with -split and -bga
 ##################################################################
-echo "    genomecov.t3...\c"
+echo -e "    genomecov.t3...\c"
 echo \
 "chr1	0	10	1
 chr1	10	20	0
@@ -64,7 +70,7 @@ rm obs exp
 ##################################################################
 #  Test blocked BAM from multiple files w/ -bga and w/o -split
 ##################################################################
-echo "    genomecov.t4...\c"
+echo -e "    genomecov.t4...\c"
 echo \
 "chr1	0	30	3
 chr1	30	40	2
@@ -78,7 +84,7 @@ rm obs exp
 ##################################################################
 #  Test blocked BAM from multiple files w/ -bga and w -split
 ##################################################################
-echo "    genomecov.t5...\c"
+echo -e "    genomecov.t5...\c"
 echo \
 "chr1	0	10	3
 chr1	10	15	2
@@ -95,7 +101,7 @@ rm obs exp
 ##################################################################
 #  Test three blocks with -split and -dz
 ##################################################################
-echo "    genomecov.t6...\c"
+echo -e "    genomecov.t6...\c"
 echo \
 "chr1	0	1
 chr1	1	1
@@ -135,7 +141,7 @@ rm obs exp
 ##################################################################
 #  Test SAM with 1bp D operator
 ##################################################################
-echo "    genomecov.t7...\c"
+echo -e "    genomecov.t7...\c"
 echo \
 "chr1	0	10	1
 chr1	11	21	1" > exp
@@ -146,7 +152,7 @@ rm obs exp
 ##################################################################
 #  Test bam with chroms that have no coverage
 ##################################################################
-echo "    genomecov.t8...\c"
+echo -e "    genomecov.t8...\c"
 echo \
 "1	0	93	100	0.93
 1	1	4	100	0.04
@@ -163,7 +169,7 @@ rm obs exp
 ##################################################################
 #  Test bam with chroms that have no coverage
 ##################################################################
-echo "    genomecov.t9...\c"
+echo -e "    genomecov.t9...\c"
 echo \
 "1	15	17	1
 1	17	20	2
@@ -175,7 +181,7 @@ rm obs exp
 ##################################################################
 #  Test bam with chroms that have no coverage
 ##################################################################
-echo "    genomecov.t10...\c"
+echo -e "    genomecov.t10...\c"
 echo \
 "1	0	15	0
 1	15	17	1
@@ -191,7 +197,7 @@ rm obs exp
 ##################################################################
 #  Test bed with chroms that have no coverage
 ##################################################################
-echo "    genomecov.t11...\c"
+echo -e "    genomecov.t11...\c"
 echo \
 "1	0	93	100	0.93
 1	1	4	100	0.04
@@ -208,7 +214,7 @@ rm obs exp
 ##################################################################
 #  Test bed with chroms that have no coverage
 ##################################################################
-echo "    genomecov.t12...\c"
+echo -e "    genomecov.t12...\c"
 echo \
 "1	15	17	1
 1	17	20	2
@@ -220,7 +226,7 @@ rm obs exp
 ##################################################################
 #  Test bed with chroms that have no coverage
 ##################################################################
-echo "    genomecov.t13...\c"
+echo -e "    genomecov.t13...\c"
 echo \
 "1	0	15	0
 1	15	17	1
@@ -233,5 +239,25 @@ $BT genomecov -i y.bed -g genome.txt -bga > obs
 check obs exp
 rm obs exp
 
+##################################################################
+#  Test pair-end chip 
+##################################################################
+echo -e "    genomecov.t14...\c"
+echo \
+"chr1	0	203	1" > exp
+$BT genomecov -ibam pair-chip.bam -bg -pc > obs
+check obs exp
+rm obs exp
 
-rm *.bam
+##################################################################
+#  Test chip fragmentSize
+##################################################################
+echo -e "    genomecov.t15...\c"
+echo \
+"chr1	1	101	1
+chr1	200	300	1" > exp
+$BT genomecov -ibam chip.bam -bg -fs 100 > obs
+check obs exp
+rm obs exp
+
+[[ $FAILURES -eq 0 ]] || exit 1;

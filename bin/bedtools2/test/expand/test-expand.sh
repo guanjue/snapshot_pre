@@ -1,13 +1,17 @@
+set -e;
 BT=${BT-../../bin/bedtools}
+
+FAILURES=0;
 
 check()
 {
 	if diff $1 $2; then
     	echo ok
-		return 1
+
 	else
-    	echo fail
-		return 0
+    	FAILURES=$(expr $FAILURES + 1);
+		echo fail
+
 	fi
 }
 
@@ -18,7 +22,7 @@ check()
 ###########################################################
 #  expand one column
 ###########################################################
-echo "    expand.t1...\c"
+echo -e "    expand.t1...\c"
 echo \
 "chr1	10	20	1	10,20,30
 chr1	10	20	2	10,20,30
@@ -33,7 +37,7 @@ rm obs exp
 ###########################################################
 #  expand multiple columns
 ###########################################################
-echo "    expand.t2...\c"
+echo -e "    expand.t2...\c"
 echo \
 "chr1	10	20	1	10
 chr1	10	20	2	20
@@ -48,7 +52,7 @@ rm obs exp
 ###########################################################
 #  expand multiple columns while switching order
 ###########################################################
-echo "    expand.t3...\c"
+echo -e "    expand.t3...\c"
 echo \
 "chr1	10	20	10	1
 chr1	10	20	20	2
@@ -59,3 +63,4 @@ chr1	40	50	60	6" > exp
 $BT expand -i expand.txt -c 5,4 > obs
 check obs exp
 rm obs exp
+[[ $FAILURES -eq 0 ]] || exit 1;

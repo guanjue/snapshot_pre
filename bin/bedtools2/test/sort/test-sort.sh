@@ -1,18 +1,22 @@
+set -e;
 BT=${BT-../../bin/bedtools}
+
+FAILURES=0;
 
 check()
 {
 	if diff $1 $2; then
     	echo ok
 	else
-    	echo fail
+    	FAILURES=$(expr $FAILURES + 1);
+		echo fail
 	fi
 }
 
 ###########################################################
 #  Test default
 ############################################################
-echo "    intersect.t01...\c"
+echo -e "    sort.t01...\c"
 echo \
 "chr3	10	220	f	12	+
 chr3	40	260	p	41	-
@@ -30,7 +34,7 @@ rm obs exp
 ###########################################################
 #  Test sizeA
 ############################################################
-echo "    intersect.t02...\c"
+echo -e "    sort.t02...\c"
 echo \
 "chr9	110	120	a	81	-
 chr9	140	160	z	05	+
@@ -48,7 +52,7 @@ rm obs exp
 ###########################################################
 #  Test sizeD
 ############################################################
-echo "    intersect.t03...\c"
+echo -e "    sort.t03...\c"
 echo \
 "chr7	240	560	x	86	-
 chr7	210	525	d	21	+
@@ -67,7 +71,7 @@ rm obs exp
 ###########################################################
 #  Test chrThenSizeA
 ############################################################
-echo "    intersect.t04...\c"
+echo -e "    sort.t04...\c"
 echo \
 "chr3	10	220	f	12	+
 chr3	40	260	p	41	-
@@ -85,7 +89,7 @@ rm obs exp
 ###########################################################
 #  Test chrThenSizeD
 ############################################################
-echo "    intersect.t05...\c"
+echo -e "    sort.t05...\c"
 echo \
 "chr3	40	260	p	41	-
 chr3	100	320	g	96	-
@@ -104,7 +108,7 @@ rm obs exp
 ###########################################################
 #  Test chrThenScoreA
 ############################################################
-echo "    intersect.t06...\c"
+echo -e "    sort.t06...\c"
 echo \
 "chr3	10	220	f	12	+
 chr3	40	260	p	41	-
@@ -122,7 +126,7 @@ rm obs exp
 ###########################################################
 #  Test chrThenScoreD
 ############################################################
-echo "    intersect.t07...\c"
+echo -e "    sort.t07...\c"
 echo \
 "chr3	100	320	g	96	-
 chr3	40	260	p	41	-
@@ -140,7 +144,7 @@ rm obs exp
 ###########################################################
 #  Test faidx
 ############################################################
-echo "    intersect.t08...\c"
+echo -e "    sort.t08...\c"
 echo \
 "chr9	110	120	a	81	-
 chr9	140	160	z	05	+
@@ -158,7 +162,7 @@ rm obs exp
 ###########################################################
 #  Test header
 ############################################################
-echo "    intersect.t09...\c"
+echo -e "    sort.t09...\c"
 echo \
 "#Header line for a.bed
 chr3	10	220	f	12	+
@@ -174,3 +178,17 @@ $BT sort -i a.bed -header > obs
 check obs exp
 rm obs exp
 
+###########################################################
+#  Test zero-length interval
+############################################################
+echo -e "    sort.t10...\c"
+echo \
+"chr1	10	20	RegionA	0	+
+chr1	24	30	RegionB	0	+
+chr1	25	25	RegionC	0	+
+chr1	30	40	RegionD	0	+" > exp
+$BT sort -i b.bed > obs
+check obs exp
+rm obs exp
+
+[[ $FAILURES -eq 0 ]] || exit 1;

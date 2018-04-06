@@ -11,17 +11,28 @@ genomic file formats such as BAM, BED, GFF/GTF, VCF. While each individual tool 
 *intersect* two interval files), quite sophisticated analyses can be conducted
 by combining multiple bedtools operations on the UNIX command line.
 
+**bedtools** is developed in the `Quinlan laboratory <http://quinlanlab.org>`_ at the `University of Utah <http://www.utah.edu/>`_ and benefits from fantastic contributions made by scientists worldwide.
 
 ==========================
 Tutorial
 ==========================
-We have developed a fairly comprehensive `tutorial <http://quinlanlab.org/tutorials/cshl2014/bedtools.html>`_ that demonstrates both the basics, as well as some more advanced examples of how bedtools can help you in your research. Please have a look.
+We have developed a fairly comprehensive `tutorial <http://quinlanlab.org/tutorials/bedtools/bedtools.html>`_ that demonstrates both the basics, as well as some more advanced examples of how bedtools can help you in your research. Please have a look.
+
+==========================
+Important notes
+==========================
+- With the exception of BAM files, `bedtools` assumes all input files are TAB delimited.
+- `bedtools` also assumes that all input files use UNIX line endings.
+- Unless you use the `-sorted` option, `bedtools` currently does not support chromosomes larger than 512Mb
+- When using the -sorted option with files whose chromosomes are not lexicographically sorted (e.g., sort -k1,1 -k2,2n for BED files), one must provide a genome file (`-g`) defining the expected chromosome order. 
+- `bedtools` requires that chromosome naming schemes are identical in files that you are comparing (e.g., 'chr1' in one file and '1' in another won't work).
+- .fai files may be used as genome (`-g`) files.
 
 ==========================
 Interesting Usage Examples
 ==========================
 
-In addition, here are a few examples of ways in which bedtools has been used for genome research. If you have interesteding examples, please send them our way and we will add them to the list.
+In addition, here are a few examples of how bedtools has been used for genome research. If you have interesting examples, please send them our way and we will add them to the list.
 
 
 - `Coverage analysis for targeted DNA capture <http://gettinggeneticsdone.blogspot.com/2014/03/visualize-coverage-exome-targeted-ngs-bedtools.html>`_. Thanks to `Stephen Turner <https://twitter.com/genetics_blog>`_.
