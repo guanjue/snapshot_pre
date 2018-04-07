@@ -461,7 +461,6 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	###### for signal
 	### plot heatmaps 
 	print('use plot_rect to plot signal index & index set heatmap...')
-	#call('time Rscript ' + script_folder + 'plot_pheatmap.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot tree
 	print('plot mean signal of cell differentiation tree')
@@ -494,17 +493,17 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 		call('mv *bar.png fun_bar/', shell=True)
 	elif function_method == 'mean':
 		### plot functional signal
-		print('use plot_pheatmap to plot function mean signal heatmap...')
-		call('time Rscript ' + script_folder + 'plot_pheatmap.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + merge_pk_filename+'.indexset_fun.png' + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + heatmap_log2 + ' ' + str(heatmap_log2_smallnum), shell=True)
+		print('use plot_rect to plot function mean signal heatmap...')
+		call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + merge_pk_filename+'.indexset_fun.png' + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 		### plot tree
 		print('plot functional state of cell differentiation tree')
 		call('if [ ! -d fun_tree ]; then mkdir fun_tree; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + heatmap_log2 + ' ' + str(heatmap_log2_smallnum), shell=True)
+		call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 		call('mv *tree.png fun_tree/', shell=True)
 		### plot violin
 		print('plot functional state violin plot...')
 		call('if [ ! -d fun_bar ]; then mkdir fun_bar; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + 'bar.png' , shell=True)
+		call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + 'violin.png' , shell=True)
 		call('mv *violin.png fun_bar/', shell=True)
 
 	###### plot index_count density plot
