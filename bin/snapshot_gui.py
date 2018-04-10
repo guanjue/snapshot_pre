@@ -437,7 +437,6 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
 
 	### get function label matrix
-
 	output_file_function = merge_pk_filename + '.function.matrix.txt'
 	sort_sigbed = 'T'
 	print('get function matrix...')
