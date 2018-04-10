@@ -498,7 +498,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 		### plot tree
 		print('plot functional state of cell differentiation tree')
 		call('if [ ! -d fun_tree ]; then mkdir fun_tree; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + heatmap_log2 + ' ' + str(heatmap_log2_smallnum), shell=True)
+		call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 		call('mv *tree.png fun_tree/', shell=True)
 		### plot violin
 		print('plot functional state violin plot...')
