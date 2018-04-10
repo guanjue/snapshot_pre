@@ -543,7 +543,6 @@ import getopt
 import sys
 def main(argv):
 	easy_snapshot(1, 'F', 'F', 0.0, 'mostfreq', '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/input_data/', '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/output_result/', '/Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/')
-	#snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2, sigscale, sigsmallnum, function_list, function_method, function_color_file, cd_tree, input_folder, output_folder, script_folder)
 
 if __name__=="__main__":
         main(sys.argv[1:])
