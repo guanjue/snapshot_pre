@@ -100,7 +100,7 @@ class StartWindow(QtWidgets.QMainWindow):
         self.input_dir = ''
         self.output_dir = ''
         
-        self.bin_dir = (os.path.dirname(os.path.realpath(__file__))) + '/../bin/'
+        self.bin_dir = (os.path.dirname(os.path.realpath(__file__))) + '/../'
 
         self.setupUi()
         self.setup_signals()
