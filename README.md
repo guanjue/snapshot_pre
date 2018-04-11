@@ -104,6 +104,8 @@ output_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/output_resul
 ```
 bash runall.sh
 ```
+##### (3) for graphical user interface (GUI) version, see:
+https://github.com/guanjue/snapshot/blob/master/gui_manual.md
 
 
 ## Output results for test data
