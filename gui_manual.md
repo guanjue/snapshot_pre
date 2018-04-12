@@ -2,7 +2,8 @@
 
 ## Prerequisites
 - pyqt5
-Snapshot-GUI is based on PyQt5. You can install PyQt5 using command `pip install pyqt5`, or install it from [PyQt5 official website](https://www.riverbankcomputing.com/software/pyqt/download5)
+
+Snapshot-GUI is based on PyQt5 and python 2.7. You can install PyQt5 using Homebrew: `brew install pyqt5`, or install it from [PyQt5 official website](https://www.riverbankcomputing.com/software/pyqt/download5)
 
 ## Get Start
 
