@@ -4,7 +4,7 @@ args = commandArgs(trailingOnly=TRUE)
 signal_matrix_file = args[1]
 output_filename = args[2]
 signal_input_list = args[3]
-signal_matrix_start_col = args[4]
+signal_matrix_start_col = as.numeric(args[4])
 
 signal_high_color = args[5]
 signal_low_color = args[6]
