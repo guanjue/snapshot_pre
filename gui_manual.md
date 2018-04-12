@@ -7,9 +7,12 @@ Snapshot-GUI is based on PyQt5 and python 2.7.
 
 We recommand two quick ways to install PyQt5 for your python 2.7.
 
-1. You can install PyQt5 using Homebrew: `brew install pyqt5`.
+### 1.
+You can install PyQt5 using Homebrew: `brew install pyqt5`.
 
-2. Install Anaconda, and PyQt5 is included in Anaconda.
+### 2.
+
+Install Anaconda, and PyQt5 is included in Anaconda.
 
 Download Anaconda: `wget https://repo.continuum.io/archive/Anaconda2-5.1.0-MacOSX-x86_64.sh`
 
@@ -19,7 +22,9 @@ Enable Anaconda PATH: `bash ~/.bash_profile`
 
 PyQt5 is included in Anaconda.
 
-3. Install PyQt5 from [PyQt5 official website](https://www.riverbankcomputing.com/software/pyqt/download5)
+### 3.
+
+Install PyQt5 from [PyQt5 official website](https://www.riverbankcomputing.com/software/pyqt/download5)
 
 ## Get Start
 
