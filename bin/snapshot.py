@@ -65,36 +65,37 @@ def get_cRE_function_state(data_info_matrix, id_col, lb_col, cover_col, middist_
 	k=0
 	for info in data_info_matrix:
 		pk_id = info[id_col-1]
+		lb_tmp = info[lb_col-1]
 		### creat pk_id_list for keeping the id order in output
 		pk_id_list.append(pk_id)
 		if not (pk_id in data_function1):
-			data_function1[pk_id] = info[lb_col-1]
+			data_function1[pk_id] = lb_tmp
 			data_function1_maxcover[pk_id] = info[cover_col-1]
 			data_function1_middist[pk_id] = info[middist_col-1]
 			data_function1_statelen[pk_id] = info[functionlen-1]
-		elif (pk_id!='0') and (data_function1[pk_id]=='0'):
+		elif (lb_tmp!='0') and (data_function1[pk_id]=='0'):
 			### if interesect non-0-state, use non-0-state replace 0 state
-			data_function1[pk_id] = info[lb_col-1]
+			data_function1[pk_id] = lb_tmp
 			data_function1_maxcover[pk_id] = info[cover_col-1]
 			data_function1_middist[pk_id] = info[middist_col-1]
 			data_function1_statelen[pk_id] = info[functionlen-1]
-		elif info[cover_col-1] > data_function1_maxcover[pk_id] and pk_id!='0':
+		elif info[cover_col-1] > data_function1_maxcover[pk_id] and lb_tmp!='0':
 			### if multiple cover; select the highest covering state
-			data_function1[pk_id] = info[lb_col-1]
+			data_function1[pk_id] = lb_tmp
 			data_function1_maxcover[pk_id] = info[cover_col-1]
 			data_function1_middist[pk_id] = info[middist_col-1]
 			data_function1_statelen[pk_id] = info[functionlen-1]
 		elif info[cover_col-1] == data_function1_maxcover[pk_id]: ### if 2 states cover the same region with same length
-			if info[middist_col-1] < data_function1_middist[pk_id] and pk_id!='0': 
+			if info[middist_col-1] < data_function1_middist[pk_id] and lb_tmp!='0': 
 				### if cover the same; check mid point distance
-				data_function1[pk_id] = info[lb_col-1]
+				data_function1[pk_id] = lb_tmp
 				data_function1_maxcover[pk_id] = info[cover_col-1]
 				data_function1_middist[pk_id] = info[middist_col-1]
 				data_function1_statelen[pk_id] = info[functionlen-1]
 			elif info[middist_col-1] == data_function1_middist[pk_id]: ### if 2 states cover the same region with same length; with same midpoint dist
-				if info[functionlen-1] < data_function1_statelen[pk_id] and pk_id!='0':
+				if info[functionlen-1] < data_function1_statelen[pk_id] and lb_tmp!='0':
 					### if cover same & mid point distance same; check state len 
-					data_function1[pk_id] = info[lb_col-1]
+					data_function1[pk_id] = lb_tmp
 					data_function1_maxcover[pk_id] = info[cover_col-1]
 					data_function1_middist[pk_id] = info[middist_col-1]
 					data_function1_statelen[pk_id] = info[functionlen-1]
