@@ -2,7 +2,7 @@ import os
 import numpy as np
 from subprocess import call
 from collections import Counter
-from sklearn.qda import QDA
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
 ################################################################################################
 ### read 2d array
@@ -227,7 +227,7 @@ def matrix_col_cal(matrix, function, para=None):
 def QDA_rescue(index_label_vector, signal_matrix):
 	##################
 	### use QDA to reassign labels
-	clf = QDA()
+	clf = QuadraticDiscriminantAnalysis()
 	clf.fit(signal_matrix, index_label_vector)
 	index_label_vector_QDA_rescue = clf.predict(signal_matrix)
 	### generate rescued signal dict
