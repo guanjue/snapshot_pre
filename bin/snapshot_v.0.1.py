@@ -227,18 +227,28 @@ def matrix_col_cal(matrix, function, para=None):
 def QDA_rescue(index_label_vector, signal_matrix):
 	##################
 	### use QDA to reassign labels
+	index_label_vector = np.array(index_label_vector)	
 	clf = QuadraticDiscriminantAnalysis()
 	clf.fit(signal_matrix, index_label_vector)
 	index_label_vector_QDA_rescue = clf.predict(signal_matrix)
+
 	### generate rescued signal dict
 	index_set_mean_signal_matrix_dict_QDA_rescue = {}
+	index_uniq_vec = []
 	for index, index_signal in zip(index_label_vector_QDA_rescue, signal_matrix):
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = [ index_signal ]
+			index_uniq_vec.append(index)
 		else:
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ].append(index_signal)
 	print('QDA changed label number: ')
 	print(np.sum(index_label_vector_QDA_rescue!=index_label_vector))
+	
+	for index in index_uniq_vec:
+		print(index)
+		print('od count: '+str(np.sum(index_label_vector == index)))
+		print('QDA rescued count: '+str(np.sum(index_label_vector_QDA_rescue == index)))
+
 	### return index_label_vector_QDA_rescue & index_set_mean_signal_matrix_dict_QDA_rescue
 	return { 'index_label_vector_QDA_rescue': index_label_vector_QDA_rescue, 'index_set_mean_signal_matrix_dict_QDA_rescue':index_set_mean_signal_matrix_dict_QDA_rescue }
 
@@ -460,7 +470,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	sort_sigbed = 'T'
 	method = 'intersect'
 	print('get binary matrix...')
-	get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed, script_folder)
+	#get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed, script_folder)
 
 	### get signal matrix
 	peak_signal_column = 5
@@ -469,7 +479,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	sort_sigbed = 'T'
 	method = 'map'
 	print('get signal matrix...')
-	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
+	#get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
 
 	### get function label matrix
 
@@ -479,7 +489,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	if function_method == 'mostfreq':
 		peak_function_column = 1
 		method = 'window'
-		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
+		#get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
 	elif function_method == 'mean':
 		peak_function_column = 5
 		signal_col = 5
