@@ -224,29 +224,35 @@ def matrix_col_cal(matrix, function, para=None):
 
 ################################################################################################
 ### use QDA to rescue peaks with rare pattern
-def QDA_rescue(index_label_vector, signal_matrix):
+def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	##################
 	### use QDA to reassign labels
 	index_label_vector = np.array(index_label_vector)	
 	clf = QuadraticDiscriminantAnalysis()
 	clf.fit(signal_matrix, index_label_vector)
-	index_label_vector_QDA_rescue = clf.predict(signal_matrix)
 
 	### generate rescued signal dict
 	index_set_mean_signal_matrix_dict_QDA_rescue = {}
+	index_label_vector_QDA_rescue = []
 	index_uniq_vec = []
-	for index, index_signal in zip(index_label_vector_QDA_rescue, signal_matrix):
+	for index, index_signal in zip(index_label_vector, signal_matrix):
+		if index == index_X:
+			index = clf.predict(index_signal)
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = [ index_signal ]
+			index_label_vector_QDA_rescue.append(index)
 			index_uniq_vec.append(index)
 		else:
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ].append(index_signal)
+			index_label_vector_QDA_rescue.append(index)
+
+	index_label_vector_QDA_rescue = np.array(index_label_vector_QDA_rescue)
 	print('QDA changed label number: ')
 	print(np.sum(index_label_vector_QDA_rescue!=index_label_vector))
 	
 	for index in index_uniq_vec:
 		print(index)
-		print('od count: '+str(np.sum(index_label_vector == index)))
+		print('OD count: '+str(np.sum(index_label_vector == index)))
 		print('QDA rescued count: '+str(np.sum(index_label_vector_QDA_rescue == index)))
 
 	### return index_label_vector_QDA_rescue & index_set_mean_signal_matrix_dict_QDA_rescue
@@ -301,6 +307,7 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 	index_set_mean_signal_matrix_dict = {}
 	index_set_vector = []
 	index_label_vector = []
+
 	for index, index_signal in zip(index_vector, signal_matrix):
 		### if the index_set is not in pass_thresh_index_dict, replace index by X_
 		if not (index in pass_thresh_index_dict):
@@ -308,7 +315,8 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 			index = ''
 			for i in range(0, len(index_vec)-1):
 				index = index + 'X_'
-			index = index + 'X'			
+			index = index + 'X'
+			index_X = index	
 		### append to index_label_vector for function matrix analysis
 		index_label_vector.append(index)
 		### get index set mean signal
@@ -320,7 +328,7 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 
 	######
 	### QDA rescue
-	index_set_mean_signal_matrix_dict_QDA_rescue_info = QDA_rescue(index_label_vector, signal_matrix)
+	index_set_mean_signal_matrix_dict_QDA_rescue_info = QDA_rescue(index_label_vector, signal_matrix, index_X)
 	index_label_vector_QDA_rescue = index_set_mean_signal_matrix_dict_QDA_rescue_info['index_label_vector_QDA_rescue']
 	index_set_mean_signal_matrix_dict_QDA_rescue = index_set_mean_signal_matrix_dict_QDA_rescue_info['index_set_mean_signal_matrix_dict_QDA_rescue']
 
