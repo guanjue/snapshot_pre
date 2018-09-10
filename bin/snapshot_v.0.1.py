@@ -308,15 +308,18 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 	index_set_vector = []
 	index_label_vector = []
 
+	### get index_X
+	index_vec = index_vector[0].split('_')
+	index_X = ''
+	for i in range(0, len(index_vec)-1):
+		index_X = index_X + 'X_'
+	index_X = index_X + 'X'
+
 	for index, index_signal in zip(index_vector, signal_matrix):
 		### if the index_set is not in pass_thresh_index_dict, replace index by X_
 		if not (index in pass_thresh_index_dict):
-			index_vec = index.split('_')
-			index = ''
-			for i in range(0, len(index_vec)-1):
-				index = index + 'X_'
-			index = index + 'X'
-			index_X = index	
+			index = index_X
+
 		### append to index_label_vector for function matrix analysis
 		index_label_vector.append(index)
 		### get index set mean signal
