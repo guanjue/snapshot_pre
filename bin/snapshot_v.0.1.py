@@ -237,7 +237,7 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	index_uniq_vec = []
 	for index, index_signal in zip(index_label_vector, signal_matrix):
 		if index == index_X:
-			index = clf.predict(index_signal)
+			index = clf.predict([index_signal])[0]
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = [ index_signal ]
 			index_label_vector_QDA_rescue.append(index)
