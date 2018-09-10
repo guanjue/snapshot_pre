@@ -18,6 +18,7 @@
 ## Dependence:
 #### Python/2.7
 ###### numpy
+###### sklearn
 #### R
 ###### ggplot2; pheatmap; igraph; networkD3
 #### bedtools
