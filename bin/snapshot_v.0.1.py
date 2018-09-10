@@ -340,25 +340,28 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 	######
 	### get index mean signal matrix
 	index_set_mean_signal_matrix = []
+	index_set_vector_qda = []
 	for index in index_set_vector:
-		### read signal matrix of each index_set
-		index_set_signal_matrix_individual = np.array(index_set_mean_signal_matrix_dict_QDA_rescue[ index ]).astype(float)
-		### get mean vector
-		index_set_signal_mean_vector_individual = np.mean(index_set_signal_matrix_individual, axis=0)
-		index_set_mean_signal_matrix.append(index_set_signal_mean_vector_individual)
+		if index in index_set_mean_signal_matrix_dict_QDA_rescue:
+			### read signal matrix of each index_set
+			index_set_signal_matrix_individual = np.array(index_set_mean_signal_matrix_dict_QDA_rescue[ index ]).astype(float)
+			### get mean vector
+			index_set_signal_mean_vector_individual = np.mean(index_set_signal_matrix_individual, axis=0)
+			index_set_mean_signal_matrix.append(index_set_signal_mean_vector_individual)
+			index_set_vector_qda.append(index)
 	######
 	### cbind index_set_label and signal matrix
 	index_label_vector_QDA_rescue = np.array(index_label_vector_QDA_rescue).reshape(len(index_label_vector_QDA_rescue), 1)
-	index_set_vector = np.array(index_set_vector).reshape(len(index_set_vector), 1)
+	index_set_vector_qda = np.array(index_set_vector_qda).reshape(len(index_set_vector_qda), 1)
 	index_set_mean_signal_matrix = np.array(index_set_mean_signal_matrix)
 	### index_set_sort_id
-	sort_id = np.argsort(index_set_vector, axis=0)
+	sort_id = np.argsort(index_set_vector_qda, axis=0)
 	sort_id = sort_id[:,0]
 	### cbind 
-	index_set_mean_signal_matrix = np.concatenate((index_set_vector, index_set_mean_signal_matrix), axis=1)[sort_id,:]
+	index_set_mean_signal_matrix = np.concatenate((index_set_vector_qda, index_set_mean_signal_matrix), axis=1)[sort_id,:]
 	index_signal_matrix = np.concatenate((bed_info, index_label_vector_QDA_rescue, signal_matrix), axis=1)
 	index_signal_matrix = index_signal_matrix[np.argsort(index_signal_matrix[:,1], axis=0),:] ### sort index label functional state matrix
-	return { 'index_set_mean_signal_matrix': index_set_mean_signal_matrix, 'sort_id': sort_id, 'index_label_vector': index_label_vector_QDA_rescue, 'index_set_vector': index_set_vector, 'index_signal_matrix': index_signal_matrix }
+	return { 'index_set_mean_signal_matrix': index_set_mean_signal_matrix, 'sort_id': sort_id, 'index_label_vector': index_label_vector_QDA_rescue, 'index_set_vector': index_set_vector_qda, 'index_signal_matrix': index_signal_matrix }
 
 ################################################################################################
 ### index_set function matrix
