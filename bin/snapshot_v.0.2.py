@@ -299,7 +299,6 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X, count_threshold):
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ].append(index_signal)
 			index_label_vector_QDA_rescue.append(index)
 
-
 	### return index_label_vector_QDA_rescue & index_set_mean_signal_matrix_dict_QDA_rescue
 	return { 'index_label_vector_QDA_rescue': index_label_vector_QDA_rescue, 'index_set_mean_signal_matrix_dict_QDA_rescue':index_set_mean_signal_matrix_dict_QDA_rescue, 'change_num_array': change_num_array }
 
