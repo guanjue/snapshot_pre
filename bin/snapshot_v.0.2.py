@@ -224,7 +224,7 @@ def matrix_col_cal(matrix, function, para=None):
 
 ################################################################################################
 ### use QDA to rescue peaks with rare pattern
-def QDA_rescue(index_label_vector, signal_matrix, index_X):
+def QDA_rescue(index_label_vector, signal_matrix, index_X, count_threshold):
 	##################
 	### use QDA to reassign labels
 	index_label_vector = np.array(index_label_vector)
@@ -235,11 +235,6 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 		print('QDA iteration: ' + str(i))
 		clf = QuadraticDiscriminantAnalysis()
 		clf.fit(signal_matrix, index_label_vector)
-
-		### generate rescued signal dict
-		index_set_mean_signal_matrix_dict_QDA_rescue = {}
-		index_label_vector_QDA_rescue = []
-		index_uniq_vec = []
 
 		### rescued index_vector
 		index_label_vector_pre = index_label_vector
@@ -256,10 +251,16 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	### get change_num_array
 	change_num_array = np.array(change_num_array)
 	change_num_array = change_num_array.reshape(change_num_array.shape[0], 1)
+
+	### generate rescued signal dict 1st
+	index_set_mean_signal_matrix_dict_QDA_rescue = {}
+	index_label_vector_QDA_rescue = []
+	index_uniq_vec = []
+
 	### get new index set matrix
 	for index, index_signal in zip(index_label_vector, signal_matrix):
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
-			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = [ index_signal ]
+			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = ''
 			index_label_vector_QDA_rescue.append(index)
 			index_uniq_vec.append(index)
 		else:
@@ -272,10 +273,33 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	change_num = np.sum(index_label_vector_QDA_rescue!=index_label_vector)
 	print(change_num)
 	
+	### filter by count_thresh
+	to_indexX = {}
 	for index in index_uniq_vec:
 		print(index)
 		print('OD count: '+str(np.sum(index_label_vector_od == index)))
-		print('QDA rescued count: '+str(np.sum(index_label_vector_QDA_rescue == index)))
+		index_new_num = np.sum(index_label_vector_QDA_rescue == index)
+		print('QDA rescued count: '+str(index_new_num))
+		if index_new_num < count_threshold:
+			to_indexX[index] = ''
+
+	### generate rescued signal dict 2nd
+	index_set_mean_signal_matrix_dict_QDA_rescue = {}
+	index_label_vector_QDA_rescue = []
+	index_uniq_vec = []
+
+	### get new index set matrix
+	for index, index_signal in zip(index_label_vector, signal_matrix):
+		if index in to_indexX:
+			index = index_X
+		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
+			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = [ index_signal ]
+			index_label_vector_QDA_rescue.append(index)
+			index_uniq_vec.append(index)
+		else:
+			index_set_mean_signal_matrix_dict_QDA_rescue[ index ].append(index_signal)
+			index_label_vector_QDA_rescue.append(index)
+
 
 	### return index_label_vector_QDA_rescue & index_set_mean_signal_matrix_dict_QDA_rescue
 	return { 'index_label_vector_QDA_rescue': index_label_vector_QDA_rescue, 'index_set_mean_signal_matrix_dict_QDA_rescue':index_set_mean_signal_matrix_dict_QDA_rescue, 'change_num_array': change_num_array }
@@ -309,7 +333,7 @@ def pass_count_thresh(index_matrix, count_threshold):
 
 ################################################################################################
 ### get index_set signal matrix
-def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, index_vector, log2_sig='F', scale='F', smallnum=0.0):
+def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, log2_sig='F', scale='F', smallnum=0.0):
 	##################
 	###### get index_set signal matrix
 	### read signal matrix
@@ -353,7 +377,7 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 
 	######
 	### QDA rescue
-	index_set_mean_signal_matrix_dict_QDA_rescue_info = QDA_rescue(index_label_vector, signal_matrix, index_X)
+	index_set_mean_signal_matrix_dict_QDA_rescue_info = QDA_rescue(index_label_vector, signal_matrix, index_X, count_threshold)
 	index_label_vector_QDA_rescue = index_set_mean_signal_matrix_dict_QDA_rescue_info['index_label_vector_QDA_rescue']
 	index_set_mean_signal_matrix_dict_QDA_rescue = index_set_mean_signal_matrix_dict_QDA_rescue_info['index_set_mean_signal_matrix_dict_QDA_rescue']
 	change_num_array = index_set_mean_signal_matrix_dict_QDA_rescue_info['change_num_array']
@@ -440,7 +464,7 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 	###### get index_set signal matrix
 	print('get index_set mean signal matrix...')
 	signal_matrix_file = merge_pk_filename + '.signal.matrix.txt'
-	index_set_mean_signal_info = get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, index_vector, log2_sig, scale, smallnum)
+	index_set_mean_signal_info = get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, log2_sig, scale, smallnum)
 	index_set_mean_signal_matrix = index_set_mean_signal_info['index_set_mean_signal_matrix']
 	sort_id = index_set_mean_signal_info['sort_id']
 	index_label_vector = index_set_mean_signal_info['index_label_vector']
@@ -466,7 +490,7 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 		write2d_array(index_fun_matrix, merge_pk_filename+'.fun.txt')
 	elif function_method == 'mean':
 		### if functional information is numerical information
-		index_set_funcion_mean_signal_info = get_index_set_mean_signal_matrix(function_matrix_file, pass_thresh_index_dict, index_vector)
+		index_set_funcion_mean_signal_info = get_index_set_mean_signal_matrix(function_matrix_file, pass_thresh_index_dict, count_threshold, index_vector)
 		index_set_funcion_mean_signal_matrix = index_set_funcion_mean_signal_info['index_set_mean_signal_matrix']
 		sort_id = index_set_funcion_mean_signal_info['sort_id']
 		index_label_vector = index_set_funcion_mean_signal_info['index_label_vector']
