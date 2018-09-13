@@ -245,7 +245,6 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 		index_label_vector = clf.predict(signal_matrix)
 
 		### print the number of peak label changes
-		print(index_uniq_vec)
 		print('QDA changed label number: ')
 		change_num = np.sum(index_label_vector_pre!=index_label_vector)
 		print(change_num)
