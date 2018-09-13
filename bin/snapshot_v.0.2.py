@@ -237,6 +237,7 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	index_uniq_vec = []
 
 	### rescued index_vector
+	index_label_vector_pre = index_label_vector
 	index_label_vector = clf.predict(signal_matrix)
 	for index, index_signal in zip(index_label_vector, signal_matrix):
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
@@ -254,7 +255,7 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	
 	for index in index_uniq_vec:
 		print(index)
-		print('OD count: '+str(np.sum(index_label_vector == index)))
+		print('OD count: '+str(np.sum(index_label_vector_pre == index)))
 		print('QDA rescued count: '+str(np.sum(index_label_vector_QDA_rescue == index)))
 
 	### return index_label_vector_QDA_rescue & index_set_mean_signal_matrix_dict_QDA_rescue
