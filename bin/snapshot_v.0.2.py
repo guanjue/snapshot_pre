@@ -229,8 +229,9 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	### use QDA to reassign labels
 	index_label_vector = np.array(index_label_vector)
 	index_label_vector_od = index_label_vector
+	change_num_array = []
 
-	for i in range(0,50):
+	for i in range(0,100):
 		print('QDA iteration: ' + str(i))
 		clf = QuadraticDiscriminantAnalysis()
 		clf.fit(signal_matrix, index_label_vector)
@@ -248,9 +249,13 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 		print('QDA changed label number: ')
 		change_num = np.sum(index_label_vector_pre!=index_label_vector)
 		print(change_num)
+		change_num_array.append(change_num)
 		if change_num == 0:
 			break
 
+	### get change_num_array
+	change_num_array = np.array(change_num_array)
+	change_num_array = change_num_array.reshape(change_num_array.shape[0], 1)
 	### get new index set matrix
 	for index, index_signal in zip(index_label_vector, signal_matrix):
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
@@ -269,11 +274,11 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	
 	for index in index_uniq_vec:
 		print(index)
-		print('OD count: '+str(np.sum(index_label_vector_pre == index)))
+		print('OD count: '+str(np.sum(index_label_vector_od == index)))
 		print('QDA rescued count: '+str(np.sum(index_label_vector_QDA_rescue == index)))
 
 	### return index_label_vector_QDA_rescue & index_set_mean_signal_matrix_dict_QDA_rescue
-	return { 'index_label_vector_QDA_rescue': index_label_vector_QDA_rescue, 'index_set_mean_signal_matrix_dict_QDA_rescue':index_set_mean_signal_matrix_dict_QDA_rescue }
+	return { 'index_label_vector_QDA_rescue': index_label_vector_QDA_rescue, 'index_set_mean_signal_matrix_dict_QDA_rescue':index_set_mean_signal_matrix_dict_QDA_rescue, 'change_num_array': change_num_array }
 
 ################################################################################################
 ### get pass count threshold index dict
@@ -351,7 +356,7 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 	index_set_mean_signal_matrix_dict_QDA_rescue_info = QDA_rescue(index_label_vector, signal_matrix, index_X)
 	index_label_vector_QDA_rescue = index_set_mean_signal_matrix_dict_QDA_rescue_info['index_label_vector_QDA_rescue']
 	index_set_mean_signal_matrix_dict_QDA_rescue = index_set_mean_signal_matrix_dict_QDA_rescue_info['index_set_mean_signal_matrix_dict_QDA_rescue']
-
+	change_num_array = index_set_mean_signal_matrix_dict_QDA_rescue_info['change_num_array']
 	######
 	### get index mean signal matrix
 	index_set_mean_signal_matrix = []
@@ -376,7 +381,7 @@ def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict,
 	index_set_mean_signal_matrix = np.concatenate((index_set_vector_qda, index_set_mean_signal_matrix), axis=1)[sort_id,:]
 	index_signal_matrix = np.concatenate((bed_info, index_label_vector_QDA_rescue, signal_matrix), axis=1)
 	index_signal_matrix = index_signal_matrix[np.argsort(index_signal_matrix[:,1], axis=0),:] ### sort index label functional state matrix
-	return { 'index_set_mean_signal_matrix': index_set_mean_signal_matrix, 'sort_id': sort_id, 'index_label_vector': index_label_vector_QDA_rescue, 'index_set_vector': index_set_vector_qda, 'index_signal_matrix': index_signal_matrix }
+	return { 'index_set_mean_signal_matrix': index_set_mean_signal_matrix, 'sort_id': sort_id, 'index_label_vector': index_label_vector_QDA_rescue, 'index_set_vector': index_set_vector_qda, 'index_signal_matrix': index_signal_matrix, 'change_num_array': change_num_array }
 
 ################################################################################################
 ### index_set function matrix
@@ -441,6 +446,9 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 	index_label_vector = index_set_mean_signal_info['index_label_vector']
 	index_set_vector = index_set_mean_signal_info['index_set_vector']
 	index_signal_matrix = index_set_mean_signal_info['index_signal_matrix']
+	change_num_array = index_set_mean_signal_info['change_num_array']
+
+	write2d_array(change_num_array, merge_pk_filename+'.change_num_array.txt')
 	write2d_array(index_set_mean_signal_matrix, merge_pk_filename+'.meansig.txt')
 	write2d_array(index_signal_matrix, merge_pk_filename+'.sig.txt')
 	print('get index_set mean signal matrix...DONE')
@@ -599,6 +607,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	call('mv ' + merge_pk_filename + '.sig.txt' + ' ' + output_folder, shell=True)
 	call('mv ' + merge_pk_filename + '.indexset_fun.txt' + ' ' + output_folder, shell=True)
 	call('mv ' + merge_pk_filename + '.fun.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.change_num_array.txt' + ' ' + output_folder, shell=True)
 
 	### index set merged figures
 	call('mv *.png ' + output_folder, shell=True)
