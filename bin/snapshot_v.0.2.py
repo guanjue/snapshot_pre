@@ -231,7 +231,7 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X, count_threshold):
 	index_label_vector_od = index_label_vector
 	change_num_array = []
 
-	for i in range(0,100):
+	for i in range(0,50):
 		print('QDA iteration: ' + str(i))
 		clf = QuadraticDiscriminantAnalysis()
 		clf.fit(signal_matrix, index_label_vector)
@@ -264,7 +264,6 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X, count_threshold):
 			index_label_vector_QDA_rescue.append(index)
 			index_uniq_vec.append(index)
 		else:
-			index_set_mean_signal_matrix_dict_QDA_rescue[ index ].append(index_signal)
 			index_label_vector_QDA_rescue.append(index)
 
 	index_label_vector_QDA_rescue = np.array(index_label_vector_QDA_rescue)
