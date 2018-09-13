@@ -227,18 +227,32 @@ def matrix_col_cal(matrix, function, para=None):
 def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	##################
 	### use QDA to reassign labels
-	index_label_vector = np.array(index_label_vector)	
-	clf = QuadraticDiscriminantAnalysis()
-	clf.fit(signal_matrix, index_label_vector)
+	index_label_vector = np.array(index_label_vector)
+	index_label_vector_od = index_label_vector
 
-	### generate rescued signal dict
-	index_set_mean_signal_matrix_dict_QDA_rescue = {}
-	index_label_vector_QDA_rescue = []
-	index_uniq_vec = []
+	for i in range(0,50):
+		print('QDA iteration: ' + str(i))
+		clf = QuadraticDiscriminantAnalysis()
+		clf.fit(signal_matrix, index_label_vector)
 
-	### rescued index_vector
-	index_label_vector_pre = index_label_vector
-	index_label_vector = clf.predict(signal_matrix)
+		### generate rescued signal dict
+		index_set_mean_signal_matrix_dict_QDA_rescue = {}
+		index_label_vector_QDA_rescue = []
+		index_uniq_vec = []
+
+		### rescued index_vector
+		index_label_vector_pre = index_label_vector
+		index_label_vector = clf.predict(signal_matrix)
+
+		### print the number of peak label changes
+		print(index_uniq_vec)
+		print('QDA changed label number: ')
+		change_num = np.sum(index_label_vector_pre!=index_label_vector)
+		print(change_num)
+		if change_num == 0:
+			break
+
+	### get new index set matrix
 	for index, index_signal in zip(index_label_vector, signal_matrix):
 		if not (index in index_set_mean_signal_matrix_dict_QDA_rescue):
 			index_set_mean_signal_matrix_dict_QDA_rescue[ index ] = [ index_signal ]
@@ -251,7 +265,8 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X):
 	index_label_vector_QDA_rescue = np.array(index_label_vector_QDA_rescue)
 	print(index_uniq_vec)
 	print('QDA changed label number: ')
-	print(np.sum(index_label_vector_QDA_rescue!=index_label_vector))
+	change_num = np.sum(index_label_vector_QDA_rescue!=index_label_vector)
+	print(change_num)
 	
 	for index in index_uniq_vec:
 		print(index)
