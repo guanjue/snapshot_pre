@@ -531,7 +531,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	sort_sigbed = 'T'
 	method = 'intersect'
 	print('get binary matrix...')
-	#get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed, script_folder)
+	get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed, script_folder)
 
 	### get signal matrix
 	peak_signal_column = 5
@@ -540,7 +540,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	sort_sigbed = 'T'
 	method = 'map'
 	print('get signal matrix...')
-	#get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
+	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
 
 	### get function label matrix
 
@@ -550,7 +550,7 @@ def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2
 	if function_method == 'mostfreq':
 		peak_function_column = 1
 		method = 'window'
-		#get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
+		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
 	elif function_method == 'mean':
 		peak_function_column = 5
 		signal_col = 5
