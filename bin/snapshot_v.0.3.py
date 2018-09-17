@@ -331,7 +331,7 @@ def pass_count_thresh(index_matrix, count_threshold):
 
 ################################################################################################
 ### get index_set signal matrix
-def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, log2_sig='F', scale='F', smallnum=0.0, qda_num):
+def get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, qda_num, log2_sig='F', scale='F', smallnum=0.0):
 	##################
 	###### get index_set signal matrix
 	### read signal matrix
@@ -462,7 +462,7 @@ def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, c
 	###### get index_set signal matrix
 	print('get index_set mean signal matrix...')
 	signal_matrix_file = merge_pk_filename + '.signal.matrix.txt'
-	index_set_mean_signal_info = get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, log2_sig, scale, smallnum, qda_num)
+	index_set_mean_signal_info = get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, qda_num, log2_sig, scale, smallnum)
 	index_set_mean_signal_matrix = index_set_mean_signal_info['index_set_mean_signal_matrix']
 	sort_id = index_set_mean_signal_info['sort_id']
 	index_label_vector = index_set_mean_signal_info['index_label_vector']
