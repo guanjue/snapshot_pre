@@ -251,7 +251,8 @@ def QDA_rescue(index_label_vector, signal_matrix, index_X, count_threshold, qda_
 			if change_num == 0:
 				break
 	else:
-		change_num_array = 0
+		for i in range(0,qda_num):
+			change_num_array.append(0)
 
 	### get change_num_array
 	change_num_array = np.array(change_num_array)
