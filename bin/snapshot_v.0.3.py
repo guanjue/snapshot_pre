@@ -149,6 +149,8 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 		if method == 'intersect':
 			### used bedtools intersect to get the binary label of each peak
 			call(script_folder + 'bedtools2/bin/' + 'bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call('cut -f'+ str(peak_info_column) +" -d$'\t' " + mark_bed_file+'.tmp01.txt' + ' > ' + mark_bed_file+'.tmp02.txt', shell=True)
+			call(script_folder + 'bedtools2/bin/' + 'bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'map':
 			### used bedtools map to get the average signal of each peak
 			call(script_folder + 'bedtools2/bin/' + 'bedtools map -c ' + str(signal_col) + ' -null 0 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
@@ -164,7 +166,7 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 		### cbind to matrix
 		call('paste ' + output_file + ' ' + mark_bed_file+'.tmp02.txt' + ' > ' + output_file+'.tmp.txt' + ' && mv ' + output_file+'.tmp.txt ' + output_file, shell=True)
 		### remove tmp files
-		call('rm ' + mark_bed_file+'.tmp01.txt' + ' ' + mark_bed_file+'.tmp02.txt' + ' ' + mark_bed_file+'.sort.bed', shell=True)
+		#call('rm ' + mark_bed_file+'.tmp01.txt' + ' ' + mark_bed_file+'.tmp02.txt' + ' ' + mark_bed_file+'.sort.bed', shell=True)
 	mark_list_vec.close()
 
 ################################################################################################
