@@ -92,6 +92,7 @@ for (i in seq(1,dim(signal_matrix_color)[1])){
 	### get tree
 	tree.igraph = graph.data.frame(tree.df, directed=TRUE)
 	tree_names = V(tree.igraph)$name
+	V(tree.igraph)$name = rep('', length(tree_names))
 	### sort colnames by tree nodes id
 	match_id = match(tree_names, colname)
 	V(tree.igraph)$color = value_col[match_id]
