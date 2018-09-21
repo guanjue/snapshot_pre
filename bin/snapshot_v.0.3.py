@@ -149,8 +149,8 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 		if method == 'intersect':
 			### used bedtools intersect to get the binary label of each peak
 			call(script_folder + 'bedtools2/bin/' + 'bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
-			call('cut -f'+ str(peak_info_column) +" -d$'\t' " + mark_bed_file+'.tmp01.txt' + ' > ' + mark_bed_file+'.tmp02.txt', shell=True)
-			call(script_folder + 'bedtools2/bin/' + 'bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call('cat ' + mark_bed_file+'.tmp01.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{if ($5<=1) print $0; else print $1, $2, $3, $4, $5}\' > ' + mark_bed_file+'.tmp01b.txt', shell=True)
+			call('mv ' + mark_bed_file+'.tmp01b.txt' + ' ' + mark_bed_file+'.tmp01.txt' + , shell=True)
 		elif method == 'map':
 			### used bedtools map to get the average signal of each peak
 			call(script_folder + 'bedtools2/bin/' + 'bedtools map -c ' + str(signal_col) + ' -null 0 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
