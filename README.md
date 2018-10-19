@@ -95,19 +95,19 @@ CMP,GMP
 ## RUN Snapshot
 ##### (1) for command line version, change the folder names (script_folder, input_folder, output_folder) in 'runall.sh'
 ```
-head -4 runall.sh 
+head -4 runall_commandline.sh 
 ##################################
 script_folder='/Users/universe/Documents/2018_BG/snapshot/bin/'
 input_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/input_data/'
 output_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/output_result/'
 ```
-##### (2) use 'runall.sh' script to run Snapshot
+##### (2) use 'runall_commandline.sh' script to run Snapshot
 ```
-bash runall.sh
+bash runall_commandline.sh
 ```
 ##### (3) for graphical user interface (GUI) version, see:
 https://github.com/guanjue/snapshot/blob/master/gui_manual.md
-
+##### note: current GUI version do not have peak rescuing step. This step will be added soon.
 
 ## Output results for test data
 ### All output files will be to the 'output_folder'
