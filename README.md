@@ -133,10 +133,10 @@ https://github.com/guanjue/snapshot/blob/master/gui_manual.md
 
 ## The cell differentiation tree for index set 6
 ##### Average signal tree (left). Most abundant functional state tree (right).
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/6.signal_list.txt0_1_1_1.tree.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/6.function_list.txt0_1_1_1.tree.png" width="400"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/5.signal_list.txt0_1_1_0.tree.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/5.function_list.txt0_1_1_0.tree.png" width="400"/> 
 
 ##### Cell type differentiation mean signal violin plot & functional state bar plot
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_violin/6.0_1_1_1.violin.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_bar/6.0_1_1_1.bar.png" width="400"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_violin/5.0_1_1_0.violin.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_bar/5.0_1_1_0.bar.png" width="400"/> 
 
 
 ##### Merged peak file (bed format)
