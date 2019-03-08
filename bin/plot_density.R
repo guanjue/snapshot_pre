@@ -29,7 +29,7 @@ prob=mean_99/var_99
 pvec = pnbinom(index_count, size=size, prob=prob, lower.tail = FALSE)
 print(summary(as.matrix(pvec)))
 ### FDR pval
-padjvec = p.adjust(pvec, method='fdr')
+padjvec = p.adjust(pvec, method='bonferroni')
 print(summary(as.matrix(padjvec)))
 ### get NB count thresh
 counts_pfdr = cbind(index_count, padjvec)
