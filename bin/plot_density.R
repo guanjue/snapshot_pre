@@ -11,7 +11,7 @@ print(summary(as.matrix(index_count)))
 print(length(index_count))
 
 
-if (length(index_count)>100){
+if (length(index_count)>20){
 ### select data without top X quantile
 top = 0.99
 mean_99 = mean(index_count[index_count<=quantile(index_count, top)])
