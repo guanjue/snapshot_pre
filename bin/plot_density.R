@@ -14,9 +14,9 @@ print(length(index_count))
 if (length(index_count)>100){
 ### select data without top X quantile
 top = 0.99
-mean_99 = mean(index_count[index_count<quantile(index_count, top)])
-var_99 = var(index_count[index_count<quantile(index_count, top)])
-sd_99 = sd(index_count[index_count<quantile(index_count, top)])
+mean_99 = mean(index_count[index_count<=quantile(index_count, top)])
+var_99 = var(index_count[index_count<=quantile(index_count, top)])
+sd_99 = sd(index_count[index_count<=quantile(index_count, top)])
 print(mean_99)
 print(var_99)
 print(summary(as.matrix(index_count[index_count<quantile(index_count, top)])))
