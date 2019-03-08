@@ -11,7 +11,7 @@ print(summary(as.matrix(index_count)))
 print(length(index_count))
 
 
-if (length(index_count)>50){
+if (length(index_count)>100){
 ### select data without top X quantile
 top = 0.99
 mean_99 = mean(index_count[index_count<=quantile(index_count, top)])
@@ -36,23 +36,22 @@ counts_pfdr = cbind(index_count, padjvec)
 if (sum(padjvec<1e-2)>0){
 	print('sum(padjvec<0.01)>0')
 	NB_count_thresh = min(counts_pfdr[padjvec<1e-2,1])
-} else if (sum(padjvec<0.05)>0) {
-	print('sum(padjvec<0.05)>0')
-	NB_count_thresh = min(counts_pfdr[padjvec<0.05,1])
-} else if (sum(pvec<0.01)>0) {
-	print('sum(pvec<0.01)>0')
-	NB_count_thresh = min(counts_pfdr[pvec<0.01,1])
-} else if (sum(pvec<0.05)>0) {
-	print('sum(pvec<0.05)>0')
-	NB_count_thresh = min(counts_pfdr[pvec<0.05,1])
 } else {
 	print('user provide')
 	NB_count_thresh = count_threshold
 	print('NB model fail, use user provide count_threshold')
 }
+if (sum(index_count>NB_count_thresh)<100){
+	NB_count_thresh = index_count[order(-index_count)][100]
+} else if (sum(index_count>NB_count_thresh)>1000){
+	NB_count_thresh = index_count[order(-index_count)][1000]
+}
 } else{
 	NB_count_thresh = 3
 }
+
+
+
 
 ###### plot density
 png('density_index_count.png', width = 8, height = 8, units = 'in', res = 300)
@@ -61,5 +60,7 @@ abline(v=log2(count_threshold), col='red', lwd=1.5, lty=2)
 abline(v=log2(NB_count_thresh), col='blue', lwd=1.5, lty=2)
 dev.off()
 
+print('initial IS number: ')
+print(sum(index_count>NB_count_thresh))
 write.table(as.matrix(NB_count_thresh), paste(index_matrix, '.NB_count_thresh.txt', sep=''), quote=F, col.names=F, row.names=F, sep='\t')
 
