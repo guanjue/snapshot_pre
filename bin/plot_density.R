@@ -3,9 +3,9 @@ args = commandArgs(trailingOnly=TRUE)
 index_matrix = args[1]
 count_threshold = as.numeric(args[2])
 
-index = read.table(index_matrix, header = F)
+index0 = read.table(index_matrix, header = F)
 
-index = apply(index, 1, function(x) paste(x[5:dim(index)[2]], collapse='_'))
+index = apply(index0, 1, function(x) paste(x[5:dim(index)[2]], collapse='_'))
 index_count = table(index)
 print(summary(as.matrix(index_count)))
 print(length(index_count))
@@ -13,17 +13,17 @@ print(length(index_count))
 
 if (length(index_count)>100){
 ### select data without top X quantile
-top = 0.99
-mean_99 = mean(index_count[index_count<=quantile(index_count, top)])
-var_99 = var(index_count[index_count<=quantile(index_count, top)])
-sd_99 = sd(index_count[index_count<=quantile(index_count, top)])
-print(mean_99)
-print(var_99)
+top = 0.95
+mean_95 = mean(index_count[index_count<=quantile(index_count, top)])
+var_95 = var(index_count[index_count<=quantile(index_count, top)])
+sd_95 = sd(index_count[index_count<=quantile(index_count, top)])
+print(mean_95)
+print(var_95)
 print(summary(as.matrix(index_count[index_count<quantile(index_count, top)])))
 
 ### get NB size and prob
-size = (mean_99^2)/(var_99 - mean_99)
-prob=mean_99/var_99
+size = (mean_95^2)/(var_95 - mean_95)
+prob=mean_95/var_95
 
 ### get NB p-val
 pvec = pnbinom(index_count, size=size, prob=prob, lower.tail = FALSE)
@@ -42,8 +42,10 @@ if (sum(padjvec<1e-2)>0){
 	print('NB model fail, use user provide count_threshold')
 }
 if (sum(index_count>NB_count_thresh)<100){
+	print('use top 100 lim')
 	NB_count_thresh = index_count[order(-index_count)][100]
 } else if (sum(index_count>NB_count_thresh)>1000){
+	print('use top 1000 lim')
 	NB_count_thresh = index_count[order(-index_count)][1000]
 }
 } else{
