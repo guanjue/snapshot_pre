@@ -5,7 +5,7 @@ count_threshold = as.numeric(args[2])
 
 index0 = read.table(index_matrix, header = F)
 
-index = apply(index0, 1, function(x) paste(x[5:dim(index)[2]], collapse='_'))
+index = apply(index0, 1, function(x) paste(x[5:dim(index0)[2]], collapse='_'))
 index_count = table(index)
 print(summary(as.matrix(index_count)))
 print(length(index_count))
