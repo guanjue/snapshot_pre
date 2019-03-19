@@ -2,7 +2,7 @@
 args = commandArgs(trailingOnly=TRUE)
 index_matrix = args[1]
 count_threshold = as.numeric(args[2])
-top_lim = 100
+top_lim = 20
 
 index0 = read.table(index_matrix, header = F)
 
