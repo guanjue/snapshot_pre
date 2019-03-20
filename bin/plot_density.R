@@ -25,8 +25,8 @@ print(summary(as.matrix(index_count[index_count<quantile(index_count, top)])))
 ### get NB size and prob
 size = (mean_95^2)/(var_95 - mean_95)
 prob=mean_95/var_95
-if (prob < 0.01){
-prob = 0.01
+if (prob < 0.001){
+prob = 0.001
 }
 
 ### get NB p-val
