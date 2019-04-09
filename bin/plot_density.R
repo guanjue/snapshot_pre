@@ -23,11 +23,13 @@ print(var_95)
 print(summary(as.matrix(index_count[index_count<quantile(index_count, top)])))
 
 ### get NB size and prob
-size = (mean_95^2)/(var_95 - mean_95)
 prob=mean_95/var_95
 if (prob < 0.001){
-prob = 0.001
+	prob = 0.001
+} else if (prob > 0.999){
+	prob = 0.999
 }
+size = prob*mean_95 / (1-prob)
 
 ### get NB p-val
 pvec = pnbinom(index_count, size=size, prob=prob, lower.tail = FALSE)
@@ -57,7 +59,10 @@ if (sum(index_count>NB_count_thresh)>1000){
 	NB_count_thresh = 3
 }
 
-
+### make sure the threshold is greater than the dimention
+if (NB_count_thresh<(dim(index0)[2]-4)){
+	NB_count_thresh = (dim(index0)[2]-4)
+}
 
 
 ###### plot density
