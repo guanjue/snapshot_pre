@@ -61,7 +61,7 @@ if (sum(index_count>NB_count_thresh)>1000){
 
 ### make sure the threshold is greater than the dimention
 if (NB_count_thresh<(dim(index0)[2]-4)){
-	NB_count_thresh = (dim(index0)[2]-4)
+	NB_count_thresh = (dim(index0)[2]-4+1)
 }
 
 
