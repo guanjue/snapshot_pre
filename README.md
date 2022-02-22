@@ -28,194 +28,202 @@
 
 
 ## Dependence:
-#### Python/2.7
+#### Python
 ###### numpy
 ###### sklearn
 #### R
 ###### ggplot2; pheatmap; igraph; networkD3
 #### bedtools
-######(http://bedtools.readthedocs.io/en/latest/content/installation.html)
-
 
 ## Install Snapshot
 #### (1) clone the github repository 
-#### (2) run the INSTALL.sh command
 ```
 git clone https://github.com/guanjue/snapshot.git
-cd snapshot
-bash INSTALL.sh
+```
+#### (2) set conda environment named as "snapshot". 
+##### Details about how to install conda can be found in (https://docs.conda.io/projects/conda/en/latest/user-guide/index.html)
+```
+>>> cat 00_INSTALL_conda_ENV.sh
+conda config --add channels defaults
+conda config --add channels bioconda
+conda config --add channels conda-forge
+conda config --add channels mvdbeek
+
+conda create -n snapshot python=3 r=3.6 bedtools ucsc_tools numpy scikit-learn r-ggplot2 r-pheatmap r-igraph r-networkD3
+conda activate snapshot
 ```
 
 ## Input data
-##### The cell type peak binary label file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
-###### The peak binary label of each cell type in bed format is in the 'atac_pk/' folder
+##### The cell type peak & signal file list: 1st column is the cell type label; 2nd column is the cell-type specific peak bed file path; 3rd column is the cell-type specific signal bigWig file path
 ```
-peak_list.txt
->>> head peak_list.txt 
-atac_pk/LSK.pk.bed	LSK
-atac_pk/CMP.pk.bed	CMP
-atac_pk/MEP.pk.bed	MEP
-atac_pk/GMP.pk.bed	GMP
+>>> head input_data/peak_signal_list.txt 
+LSK	atac_pk/LSK.pk.bed	atac_sig/LSK.atac.sig.bw
+CMP	atac_pk/CMP.pk.bed	atac_sig/CMP.atac.sig.bw
+MEP	atac_pk/MEP.pk.bed	atac_sig/MEP.atac.sig.bw
+GMP	atac_pk/GMP.pk.bed	atac_sig/GMP.atac.sig.bw
 ```
 
-##### The cell type peak signal file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
-###### The signal track of each cell type in bed format is in the 'atac_sig/' folder
+##### The cell type functional state file list: 1st column is the cell type label; 2nd column is the epigenetic state bedgraph file path
 ```
-signal_list.txt
->>> head signal_list.txt 
-atac_sig/LSK.atac.sig.bed	LSK
-atac_sig/CMP.atac.sig.bed	CMP
-atac_sig/MEP.atac.sig.bed	MEP
-atac_sig/GMP.atac.sig.bed	GMP
-```
-
-##### The cell type functional state file list: 1st column is the foldername and the filename in input folder; 2nd column is the cell type label in output figures
-###### The functional state label of each cell type in bed format is in the 'function_label/' folder
-```
-function_list.txt
->>> head function_list.txt 
-function_label/LSK.ideas.bed	LSK
-function_label/CMP.ideas.bed	CMP
-function_label/MEP.ideas.bed	MEP
-function_label/GMP.ideas.bed	GMP
+>>> head input_data/function_list.txt 
+LSK	function_label/LSK.ideas.bedgraph
+CMP	function_label/CMP.ideas.bedgraph
+MEP	function_label/MEP.ideas.bedgraph
+GMP	function_label/GMP.ideas.bedgraph
 ```
 
 ##### The cell type differentiation tree: Each row represent one edge in the ell type differentiation tree. The 1st cell type is the progenitor cell type and the 2nd cell type is the differentiated cell type
 ```
-cd_tree.txt 
-head cd_tree.txt
+>>> head input_data/cd_tree.txt 
 LSK,CMP
 CMP,MEP
 CMP,GMP
 ```
 
-##### The functional state color list
+##### The functional state color list: 1st column is the epigenetic state label; 2nd column is the epigenetic state RGB color
 ```
->>> head function_color_list.txt
-36	35	194,7,153	250,151,3
-35	34	250,151,3	136,53,241
-34	33	136,53,241	197,151,0
-33	32	197,151,0	138,177,89
-32	31	138,177,89	191,0,84
-31	30	191,0,84	176,0,93
-30	29	176,0,93	252,48,50
-29	28	252,48,50	0,0,172
-28	27	0,0,172	219,8,0
-27	26	219,8,0	241,198,171
+>>> head input_data/function_color_list.txt 
+0	255,255,255
+1	180,180,180
+2	25,160,25
+3	126,126,240
+4	253,253,157
+5	240,185,254
+6	253,213,154
+7	0,0,212
+8	0,146,0
+9	250,248,0
 ```
 
 ## RUN Snapshot
-##### (1) for command line version, change the folder names (script_folder, input_folder, output_folder) in 'runall.sh'
+##### (1) User need to change the script_folder, input_folder, output_folder, in 'run_Snapshot.sh' file. 
+##### The "min_number_per_index_set" is the only parameter user need to decide for Snapshot. It is minimum number of peak per index-set. The index-set with lower number of peaks will be merged into the last X_X_X_... index-set 
 ```
-head -4 runall_commandline.sh 
+>>> cat run_Snapshot.sh
 ##################################
-script_folder='/Users/universe/Documents/2018_BG/snapshot/bin/'
-input_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/input_data/'
-output_folder='/Users/universe/Documents/2018_BG/snapshot/test_data/output_result/'
+script_folder='/Users/universe/Documents/2022_Independent/snapshot/bin/'
+input_folder='/Users/universe/Documents/2022_Independent/00_Independent_analysis/snapshot_test_data/input_data/'
+output_folder='/Users/universe/Documents/2022_Independent/00_Independent_analysis/snapshot_test_data/output_result/'
+master_peak_bed='/Users/universe/Documents/2022_Independent/00_Independent_analysis/snapshot_test_data/input_data/atac_pk/cCRE.Pool.Merged.bed'
+
+peak_signal_list_file='peak_signal_list.txt'
+IDEAS_state_200bp_bed_files_list_file='function_list.txt'
+IDEAS_state_color_list_file='function_color_list.txt'
+cell_type_tree_file='cd_tree.txt'
+
+output_name='snapshot_test_run'
+min_number_per_index_set=10
+
+
+### run snapshot (CORE!!!)
+echo 'run snapshot :o'
+cd $input_folder
+time python $script_folder'snapshot_v1.py' -p $peak_signal_list_file \
+-n $output_name -t $min_number_per_indexset \
+-f $IDEAS_state_200bp_bed_files_list_file \
+-c $IDEAS_state_color_list_file \
+-e $cell_type_tree_file \
+-i $input_folder -o $output_folder -s $script_folder \
+-m $master_peak_bed
+echo 'complete :)'
 ```
 ##### (2) use 'runall_commandline.sh' script to run Snapshot
 ```
-bash runall_commandline.sh
+time bash run_Snapshot.sh
 ```
-##### (3) for graphical user interface (GUI) version, see:
-https://github.com/guanjue/snapshot/blob/master/gui_manual.md
-##### note: current GUI version do not have peak rescuing step. This step will be added soon.
+
 
 ## Output results for test data
 ### All output files will be to the 'output_folder'
 
 ## The heatmap for index set
 ##### Average atac-seq signal heatmap (left). Most abundant functional state heatmap (right).
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/snapshot.meansig.png" width="350"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/snapshot.indexset_fun.png" width="350"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/snapshot_test_run.meansig.png" width="350"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/snapshot_test_run.indexset_fun.png" width="350"/> 
 
 ##### Functional state epigenetic patterns.
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/input_data/function_label/functional_state_epigenetic_pattern.png" width="350"/>
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/functional_state_epigenetic_pattern.png" width="350"/>
 
 ## The cell differentiation tree for index set 6
 ##### Average signal tree (left). Most abundant functional state tree (right).
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_tree/5.signal_list.txt0_1_1_0.tree.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_tree/5.function_list.txt0_1_1_0.tree.png" width="400"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/6.peak_signal_list.txt1_0_0_1.tree.pdf" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/6.function_list.txt1_0_0_1.tree.pdf" width="400"/> 
 
 ##### Cell type differentiation mean signal violin plot & functional state bar plot
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/signal_violin/5.0_1_1_0.violin.png" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/fun_bar/5.0_1_1_0.bar.png" width="400"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/6.1_0_0_1.violin.pdf" width="400"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/6.1_0_0_1.bar.pdf" width="400"/> 
 
 
 ##### Merged peak file (bed format)
 ```
->>> head atac_4cell.sort.bed
-chr1	3445639	3446478	chr1_3445639_3446478
-chr1	3531951	3532124	chr1_3531951_3532124
-chr1	3670451	3671268	chr1_3670451_3671268
-chr1	3672091	3672710	chr1_3672091_3672710
-chr1	3915538	3915756	chr1_3915538_3915756
-chr1	4247201	4247354	chr1_4247201_4247354
-chr1	4332543	4332767	chr1_4332543_4332767
-chr1	4351941	4352297	chr1_4351941_4352297
-chr1	4405847	4406057	chr1_4405847_4406057
-chr1	4412515	4412820	chr1_4412515_4412820
+>>> head output_result/snapshot_test_run.sort.bed 
+chr1	3445639	3446478	1
+chr1	3531951	3532124	2
+chr1	3670451	3671268	3
+chr1	3672091	3672710	4
+chr1	3915538	3915756	5
+chr1	4247201	4247354	6
+chr1	4332543	4332767	7
+chr1	4351941	4352297	8
+chr1	4405847	4406057	9
+chr1	4412515	4412820	10
 ```
 
 ##### Index set mean signal matrix (bed format)
 ```
->>> head atac_4cell.meansig.txt
-0_0_0_1	1.0613451945782413	1.1849577200056323	0.5294839829940231	2.928835175525287
-0_0_1_0	1.0671246828371792	1.2664917833388463	4.556785451444871	0.9371314051064104
-0_0_1_1	1.50932230122	0.9744568211300001	1.94595219793	1.8584097730899998
-0_1_0_0	1.4409803894962963	2.8776475408259254	1.4850287042000003	1.4514520181962964
-0_1_0_1	1.1662457074078123	3.1474988663281254	0.5663094448585938	4.87743563546875
-0_1_1_0	1.5020250353344822	3.7340121203655174	6.566498942344828	1.2791282110241378
-0_1_1_1	1.543835688075	3.2044735005000002	4.55608701975	1.8168650337750003
-1_0_0_0	3.0386503686410262	1.1333250568846154	0.8024231362858975	1.2217726620948723
-1_0_0_1	3.243331680793104	1.4948123895824135	0.7377843294110347	5.471914041772415
-1_0_1_0	2.8438892549	2.0149830489600005	3.2194045138	1.9493869683600002
-
+>>> head output_result/snapshot_test_run.meansig.txt 
+0_0_0_1	1.1942193919753075	1.2288909759259259	0.5143000398765433	2.2558045432098757
+0_0_1_0	1.1964813092783506	1.4681236288659794	4.559413402061856	0.8977813195876289
+0_1_0_0	2.3508093636363636	5.0732800000000005	2.2966802727272726	2.4899857272727273
+0_1_0_1	1.2273509024999998	3.1057296249999986	0.5968926647500001	4.654063825
+0_1_1_0	1.4231207	4.145504333333332	6.617822999999999	1.2878787333333332
+1_0_0_0	3.55514962962963	1.6250158148148148	1.213055225925926	1.6773348888888886
+1_0_0_1	3.7572421052631584	1.427374894736842	0.6267781684210526	7.191793684210525
+1_0_1_0	2.780161818181819	2.0187935000000006	2.9209631363636364	1.9096209545454548
+1_1_0_0	5.526250833333332	3.49659475	0.6552302083333333	1.249175055555556
+1_1_0_1	6.688364330508474	7.341211720338984	0.9215638576271191	8.187531830508476
 ```
 
 ##### Index signal matrix (bed format)
 ```
->>> head atac_4cell.sig.txt
-chr1_13592001_13592161	0_0_0_1	2.822207311	1.115653708	0.2218317345	8.850424476
-chr1_6975366_6975635	0_0_0_1	0.5263196312	0.7616906814	0.2218317345	1.920846614
-chr1_7053436_7053652	0_0_0_1	2.527397664	0.7896970943	0.8979158313	2.495271575
-chr1_13119493_13119701	0_0_0_1	1.301046319	0.6508195845	0.2326848409	1.060591172
-chr1_7109537_7109689	0_0_0_1	0.0	0.0	0.0	0.0
-chr1_13050969_13051145	0_0_0_1	0.197709028	0.8361873878	0.665887475	1.311687159
-chr1_16563017_16563247	0_0_0_1	1.195682715	1.589561904	0.4430346537	2.032925361
-chr1_13125691_13125919	0_0_0_1	2.450325898	2.278048049	1.294899657	1.557048213
-chr1_12985993_12986340	0_0_0_1	0.7858383109	0.4782726234	0.251386741	2.945028392
-chr1_7589470_7589648	0_0_0_1	1.198632728	0.5693356928	0.1489476907	2.255937684
-
+>>> head head output_result/snapshot_test_run.sig.txt 
+158	0_0_0_1	0.461536	0.97629	0.420611	1.17384
+122	0_0_0_1	1.05508	1.59315	0.332113	3.5154
+124	0_0_0_1	0.570329	1.321	0.197305	5.40436
+590	0_0_0_1	0.495322	0.82881	0.202169	1.4323
+126	0_0_0_1	1.05409	0.395961	0.25931	2.14795
+589	0_0_0_1	2.23673	1.88691	0.730118	3.32344
+587	0_0_0_1	1.57064	0.631929	0.13965	0.517572
+129	0_0_0_1	0.5076	0.613323	0.229215	1.54835
+130	0_0_0_1	1.38835	2.22171	0.0815782	3.49794
+121	0_0_0_1	2.41654	3.42985	0.510925	5.30627
 ```
 
 ##### Index set most abundant functional state matrix (bed format)
 ```
->>> head atac_4cell.indexset_fun.txt
-0_0_0_1	0	0	0	0
+>>> head output_result/snapshot_test_run.indexset_fun.txt 
+0_0_0_1	0	0	0	20
 0_0_1_0	0	0	20	0
-0_0_1_1	0	0	0	0
-0_1_0_0	0	0	0	0
-0_1_0_1	0	20	0	20
-0_1_1_0	0	20	12	0
-0_1_1_1	0	11	11	0
+0_1_0_0	0	20	11	20
+0_1_0_1	0	20	0	12
+0_1_1_0	0	20	12	1
 1_0_0_0	20	0	0	0
-1_0_0_1	20	0	0	12
-1_0_1_0	20	0	25	0
-
+1_0_0_1	20	4	0	12
+1_0_1_0	20	0	0	0
+1_1_0_0	12	20	0	0
+1_1_0_1	12	12	0	12
 ```
 
 ##### Index functional state matrix (bed format)
 ```
->>> head atac_4cell.fun.txt
-chr1_13592001_13592161	0_0_0_1	12	4	0	12
-chr1_6975366_6975635	0_0_0_1	0	0	0	0
-chr1_7053436_7053652	0_0_0_1	20	0	0	20
-chr1_13119493_13119701	0_0_0_1	0	0	0	0
-chr1_7109537_7109689	0_0_0_1	0	4	4	11
-chr1_13050969_13051145	0_0_0_1	0	0	0	0
-chr1_16563017_16563247	0_0_0_1	0	0	0	20
-chr1_13125691_13125919	0_0_0_1	20	20	20	20
-chr1_12985993_12986340	0_0_0_1	0	5	10	20
-chr1_7589470_7589648	0_0_0_1	0	0	0	0
-
+>>> head output_result/snapshot_test_run.fun.txt         
+158	0_0_0_1	7	4	0	0
+122	0_0_0_1	0	11	7	11
+124	0_0_0_1	4	4	0	20
+590	0_0_0_1	0	0	0	0
+126	0_0_0_1	0	0	0	4
+589	0_0_0_1	25	13	0	20
+587	0_0_0_1	7	7	7	7
+129	0_0_0_1	10	0	0	0
+130	0_0_0_1	4	20	0	20
+121	0_0_0_1	20	20	0	15
 ```
 
 

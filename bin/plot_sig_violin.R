@@ -2,8 +2,9 @@ library(ggplot2)
 ### get parameters
 args = commandArgs(trailingOnly=TRUE)
 index_matrix_signal_inputfile = args[1]
-signal_input_list = args[2]
+input_list = args[2]
 outfile = args[3]
+master_pk = args[4]
 
 ### read index set matrix
 read_color = function(x){
@@ -19,6 +20,7 @@ read_color = function(x){
 ### read signal matrix file
 print('read signal matrix file')
 signal_matrix_od = as.matrix(read.table(index_matrix_signal_inputfile, header=FALSE))
+peak_bed_od = read.table(master_pk, header=FALSE, sep='\t')
 
 ### extract signal matrix without info
 signal_matrix = signal_matrix_od[ , c(3:dim(signal_matrix_od)[2]) ]
@@ -27,8 +29,8 @@ signal_matrix_bed_info = t( apply(signal_matrix_bed_info, 1, function(x) c(unlis
 ### convert to numeric matrix
 class(signal_matrix) = 'numeric'
 ###### read colnames file
-colname_file = read.table(signal_input_list, header=F)
-colname = colname_file[,2]
+colname_file = read.table(input_list, header=F)
+colname = colname_file[,1]
 colnames(signal_matrix) = colname
 
 ### index set
@@ -50,7 +52,9 @@ for (k in c(1:length(index_set_id_uniq))){
 		signal_table_df = rbind(signal_table_df, signal_table_tmp)
 	}
 	### save bed files
-	write.table(signal_matrix_bed_info_tmp, file = paste(toString(k-1), '.', toString(index_set_id_uniq[k]), '.index_set.bed', sep=''), quote = FALSE, sep='\t', col.names = FALSE, row.names = FALSE)
+	bed_pk_IS_k = peak_bed_od[as.numeric(signal_matrix_bed_info_tmp[,1]),]
+	signal_matrix_bed_info_tmp_bed = cbind(bed_pk_IS_k, signal_matrix_bed_info_tmp[,2])
+	write.table(signal_matrix_bed_info_tmp_bed, file = paste(toString(k-1), '.', toString(index_set_id_uniq[k]), '.index_set.bed', sep=''), quote = FALSE, sep='\t', col.names = FALSE, row.names = FALSE)
 	### save figure
 	colnames(signal_table_df) = c('celltype', 'signal')
 	### keep the x-axis order

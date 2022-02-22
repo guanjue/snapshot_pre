@@ -1,4 +1,0 @@
-atac_pk/LSK.pk.bed	LSK
-atac_pk/CMP.pk.bed	CMP
-atac_pk/MEP.pk.bed	MEP
-atac_pk/GMP.pk.bed	GMP

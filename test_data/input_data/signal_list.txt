@@ -1,4 +1,0 @@
-atac_sig/LSK.atac.sig.bed	LSK
-atac_sig/CMP.atac.sig.bed	CMP
-atac_sig/MEP.atac.sig.bed	MEP
-atac_sig/GMP.atac.sig.bed	GMP

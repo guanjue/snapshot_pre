@@ -6,7 +6,7 @@ library(igraph)
 args = commandArgs(trailingOnly=TRUE)
 signal_matrix_file = args[1]
 cd_tree = args[2]
-signal_input_list = args[3]
+input_list = args[3]
 signal_matrix_start_col = args[4]
 high_color = args[5]
 low_color = args[6]
@@ -26,8 +26,8 @@ index_set_name = signal_matrix_od[,1]
 class(signal_matrix) = 'numeric'
 
 ###### read colnames file
-colname_file = read.table(signal_input_list, header=F)
-colname = colname_file[,2]
+colname_file = read.table(input_list, header=F)
+colname = colname_file[,1]
 
 ### read cell development tree file
 tree = read.table(cd_tree, header = F, sep=',')
@@ -52,13 +52,13 @@ for (i in seq(1,dim(signal_matrix)[1])){
 	### get tree
 	tree.igraph = graph.data.frame(tree.df, directed=TRUE)
 	tree_names = V(tree.igraph)$name
-	V(tree.igraph)$name = rep('', length(tree_names))
+	V(tree.igraph)$name = tree_names#rep('', length(tree_names))
 	### sort colnames by tree nodes id
 	match_id = match(tree_names, colname)
 	V(tree.igraph)$color = value_col[match_id]
 	V(tree.igraph)$size = 25
 
-	png(paste(toString(i-1), '.', signal_input_list, index_set_name[i], '.tree.png', sep = ''), width = 800, height = 800)
+	pdf(paste(toString(i-1), '.', input_list, index_set_name[i], '.tree.pdf', sep = ''), width = 12, height = 12)
 	plot(tree.igraph, layout = layout_as_tree(tree.igraph, root=c(1)))
 	dev.off()
 }

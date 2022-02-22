@@ -25,7 +25,7 @@ signal_matrix = signal_matrix_od[ , c(3:dim(signal_matrix_od)[2]) ]
 class(signal_matrix) = 'numeric'
 ###### read colnames file
 colname_file = read.table(signal_input_list, header=F)
-colname = colname_file[,1]
+colname = colname_file[,2]
 colnames(signal_matrix) = colname
 
 ### index set
@@ -45,9 +45,7 @@ ideas_state_matrix_uniq_sort = sort(ideas_state_matrix_uniq)
 ### set heatmap colors
 print('set heatmap colors')
 rgb_col_num = read.table(ideas_state_color,header=F)
-rgb_col_num = as.character(rev(rgb_col_num[,2]))
-print(rgb_col_num)
-rgb_col_num = c(rgb_col_num, rgb_col_num[length(rgb_col_num)])
+rgb_col_num = rgb_col_num[,3]
 rgb_col_num = rgb_col_num[c((length(rgb_col_num)-1):1,length(rgb_col_num))]
 rgb_col_num = as.matrix(rgb_col_num)
 #print(rgb_col_num)
@@ -79,7 +77,7 @@ for (k in c(1:length(index_set_id_uniq_sort))){
 	colnames(counts_matrix_t) = colnames(signal_matrix)
 
 	### save figure
-	pdf(paste(toString(k-1), '.', toString(index_set_id_uniq_sort[k]), '.', cREs_IDEASpro_outfile, sep=''), dim(signal_matrix)[2]*1+5, dim(signal_matrix)[2]*1+5)
+	png(paste(toString(k-1), '.', toString(index_set_id_uniq_sort[k]), '.', cREs_IDEASpro_outfile, sep=''), dim(signal_matrix)[2]*100+5, dim(signal_matrix)[2]*100+5)
 	barplot(counts_matrix_t, col=my_colorbar)
 	dev.off()
 }

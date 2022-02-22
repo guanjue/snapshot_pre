@@ -1,0 +1,4 @@
+LSK	atac_pk/LSK.pk.bed	atac_sig/LSK.atac.sig.bw
+CMP	atac_pk/CMP.pk.bed	atac_sig/CMP.atac.sig.bw
+MEP	atac_pk/MEP.pk.bed	atac_sig/MEP.atac.sig.bw
+GMP	atac_pk/GMP.pk.bed	atac_sig/GMP.atac.sig.bw
