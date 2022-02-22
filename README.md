@@ -138,7 +138,7 @@ time bash run_Snapshot.sh
 
 ## The heatmap for index set
 ##### Average atac-seq signal heatmap (left). Most abundant functional state heatmap (right).
-<img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/snapshot_test_run.meansig.png" width="350"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/output_result/snapshot_test_run.indexset_fun.png" width="350"/> 
+<img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/snapshot_test_run.meansig.png" width="350"/> <img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/snapshot_test_run.indexset_fun.png" width="350"/> 
 
 ##### Functional state epigenetic patterns.
 <img src="https://github.com/guanjue/snapshot/blob/master/test_data/example/functional_state_epigenetic_pattern.png" width="350"/>
