@@ -48,7 +48,9 @@ heatmap_save_type = png
 signal_matrix_od = as.matrix(read.table(signal_matrix_file, header=FALSE))
 ### extract signal matrix without info
 signal_matrix = signal_matrix_od[ , signal_matrix_start_col:dim(signal_matrix_od)[2] ]
-signal_matrix[dim(signal_matrix)[1],] = rep(1,dim(signal_matrix)[2])
+if (signal_matrix[dim(signal_matrix)[1],1]=='X'){
+	signal_matrix[dim(signal_matrix)[1],] = rep(1,dim(signal_matrix)[2])
+}
 ### convert to numeric matrix
 class(signal_matrix) = 'numeric'
 
