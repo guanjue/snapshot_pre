@@ -602,7 +602,7 @@ def snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, sig
 	### plot binary heatmaps 
 	print('use plot_rect to plot signal index & index set heatmap...')
 	call('cat ' + outputname+'.meansig.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1}\' | awk -F \'_\' -v OFS=\'\t\' \'{print $0}\'  > ' + outputname+'.index_binary_mat.txt.tmp1', shell=True)
-	call('cat ' + outputname+'.meansig.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1}\' | awk -F \'_\' -v OFS=\'\t\' \'{for(i=1;i<=NF;i++)printf "%s\t",$i; printf "\n"}\'  > ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
+	call('cat ' + outputname+'.meansig.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1}\' | awk -F \'_\' -v OFS=\'\t\' \'{for(i=1;i<=NF;i++) printf "%s\\t",$i; printf "\\n"}\'  > ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
 	call('paste '+ outputname+'.index_binary_mat.txt.tmp1' + ' ' + outputname+'.index_binary_mat.txt.tmp2' + ' > ' + outputname+'.index_binary_mat.txt', shell=True)
 	call('rm '+ outputname+'.index_binary_mat.txt.tmp1' + ' ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
 	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.index_binary_mat.txt' + ' ' + outputname+'.index_binary_mat.png' + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + 'black' + ' ' + 'white' + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
