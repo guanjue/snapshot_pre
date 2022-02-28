@@ -1,4 +1,0 @@
-LSK	function_label/LSK.ideas.bedgraph
-CMP	function_label/CMP.ideas.bedgraph
-MEP	function_label/MEP.ideas.bedgraph
-GMP	function_label/GMP.ideas.bedgraph

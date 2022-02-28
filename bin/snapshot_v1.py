@@ -193,14 +193,14 @@ def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, 
 
 ################################################################################################
 ### get merged peaks
-def merge_pk(peak_signal_list, outputname, script_folder):
+def merge_pk(peak_signal_state_list, outputname, script_folder):
 	import os.path
 	import os
 	### 
 	if os.path.isfile('all_pk.bed'):
 		call('rm all_pk.bed', shell=True)
 	### read filenames in peak list
-	for file_info in open(peak_signal_list, 'r'):
+	for file_info in open(peak_signal_state_list, 'r'):
 		filename = file_info.split('\t')[1]
 		call('cat ' + filename + ' >> all_pk.bed', shell=True)
 	### sort merge_pk
@@ -533,7 +533,7 @@ def get_index_set(outputname, signal_matrix_file, function_matrix_file, count_th
 ################################################################################################
 
 ################################################################################################
-def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, count_threshold, siglog2, sigscale, sigsmallnum, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num):
+def snapshot(master_peak_bed, peak_signal_state_list, genome_size_file, outputname, count_threshold, siglog2, sigscale, sigsmallnum, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num):
 	### set working directory
 	os.chdir(input_folder)
 
@@ -553,7 +553,7 @@ def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, co
 	################################################################################################
 	###### merge peak -> get sorted peak bed files
 	if master_peak_bed==None:
-		merge_pk_name = merge_pk(peak_signal_list, outputname, script_folder)
+		merge_pk_name = merge_pk(peak_signal_state_list, outputname, script_folder)
 	else:
 		call('cat '+master_peak_bed + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1, $2, $3, NR}\' > ' + outputname + '.sort.bed', shell=True)
 		merge_pk_name = outputname + '.sort.bed'
@@ -568,7 +568,7 @@ def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, co
 	sort_sigbed = 'T'
 	method = 'intersect'
 	print('get binary matrix...')
-	get_mark_matrix(outputname, peak_label_column, peak_signal_list, output_file_index, method, sort_sigbed, script_folder, signal_type)
+	get_mark_matrix(outputname, peak_label_column, peak_signal_state_list, output_file_index, method, sort_sigbed, script_folder, signal_type)
 
 	### get signal matrix
 	peak_signal_column = 5
@@ -577,7 +577,7 @@ def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, co
 	sort_sigbed = 'T'
 	method = 'map'
 	print('get signal matrix...')
-	get_mark_matrix(outputname, peak_signal_column, peak_signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_type)
+	get_mark_matrix(outputname, peak_signal_column, peak_signal_state_list, output_file_signal, method, sort_sigbed, script_folder, signal_type)
 
 	### get function label matrix
 	output_file_function = outputname + '.function.matrix.txt'
@@ -586,7 +586,7 @@ def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, co
 	print('get function matrix...')
 	peak_function_column = 1
 	method = 'window'
-	get_mark_matrix(outputname, peak_function_column, peak_signal_list, output_file_function, method, sort_sigbed, script_folder, signal_type, genome_size_file)
+	get_mark_matrix(outputname, peak_function_column, peak_signal_state_list, output_file_function, method, sort_sigbed, script_folder, signal_type, genome_size_file)
 
 	###### plot index_count density plot
 	print('get NB_count_thresh')
@@ -614,19 +614,19 @@ def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, co
 	call('cat ' + outputname+'.meansig.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1}\' | awk -F \'_\' -v OFS=\'\t\' \'{for(i=1;i<=NF;i++) printf "%s\\t",$i; printf "\\n"}\'  > ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
 	call('paste '+ outputname+'.index_binary_mat.txt.tmp1' + ' ' + outputname+'.index_binary_mat.txt.tmp2' + ' > ' + outputname+'.index_binary_mat.txt', shell=True)
 	call('rm '+ outputname+'.index_binary_mat.txt.tmp1' + ' ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
-	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.index_binary_mat.txt' + ' ' + outputname+'.index_binary_mat.png' + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + 'black' + ' ' + 'white' + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.index_binary_mat.txt' + ' ' + outputname+'.index_binary_mat.png' + ' ' + peak_signal_state_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + 'black' + ' ' + 'white' + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot heatmaps 
 	print('use plot_rect to plot signal index & index set heatmap...')
-	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.meansig.txt' + ' ' + outputname+'.meansig.png' + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.meansig.txt' + ' ' + outputname+'.meansig.png' + ' ' + peak_signal_state_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot tree
 	print('plot mean signal of cell differentiation tree')
 	call('if [ ! -d signal_tree ]; then mkdir signal_tree; fi', shell=True)
-	call('time Rscript ' + script_folder + 'plot_tree.R ' + outputname+'.meansig.txt' + ' ' + cd_tree + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	call('time Rscript ' + script_folder + 'plot_tree.R ' + outputname+'.meansig.txt' + ' ' + cd_tree + ' ' + peak_signal_state_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	call('mv *tree.pdf signal_tree/', shell=True)
 	### plot violin
 	print('plot signal violin plot & create index set bed files ...')
 	call('if [ ! -d signal_violin ]; then mkdir signal_violin; fi', shell=True)
-	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + outputname+'.sig.txt' + ' ' + peak_signal_list + ' ' + 'violin.pdf' + ' ' + outputname + '.sort.bed' , shell=True)
+	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + outputname+'.sig.txt' + ' ' + peak_signal_state_list + ' ' + 'violin.pdf' + ' ' + outputname + '.sort.bed' , shell=True)
 	call('mv *violin.pdf signal_violin/', shell=True)
 	call('if [ ! -d index_set_bed ]; then mkdir index_set_bed; fi', shell=True)
 	call('mv *.index_set.bed index_set_bed/', shell=True)
@@ -636,16 +636,16 @@ def snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, co
 	if function_method == 'mostfreq':
 		### plot functional state
 		print('use plot_rect to plot function heatmap...')
-		call('time Rscript ' + script_folder + 'plot_rect.R ' + outputname+'.indexset_fun.txt' + ' ' + outputname+'.indexset_fun.png' + ' ' + peak_signal_list + ' ' + function_color_file + ' ' + str(index_set_fun_matrix_start_col) + ' ' + index_set_boarder_color, shell=True)
+		call('time Rscript ' + script_folder + 'plot_rect.R ' + outputname+'.indexset_fun.txt' + ' ' + outputname+'.indexset_fun.png' + ' ' + peak_signal_state_list + ' ' + function_color_file + ' ' + str(index_set_fun_matrix_start_col) + ' ' + index_set_boarder_color, shell=True)
 		### plot tree
 		print('plot functional state of cell differentiation tree')
 		call('if [ ! -d fun_tree ]; then mkdir fun_tree; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_tree_multi_color.R ' + outputname+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_color_file + ' ' + peak_signal_list + ' ' + str(index_set_fun_matrix_start_col), shell=True)
+		call('time Rscript ' + script_folder + 'plot_tree_multi_color.R ' + outputname+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_color_file + ' ' + peak_signal_state_list + ' ' + str(index_set_fun_matrix_start_col), shell=True)
 		call('mv *tree.pdf fun_tree/', shell=True)
 		### plot bar
 		print('plot functional state barplot...')
 		call('if [ ! -d fun_bar ]; then mkdir fun_bar; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_fun_bar.R ' + outputname+'.fun.txt' + ' ' + peak_signal_list + ' ' + function_color_file + ' ' + 'bar.pdf' , shell=True)
+		call('time Rscript ' + script_folder + 'plot_fun_bar.R ' + outputname+'.fun.txt' + ' ' + peak_signal_state_list + ' ' + function_color_file + ' ' + 'bar.pdf' , shell=True)
 		call('mv *bar.pdf fun_bar/', shell=True)
 
 	###### mv all output to output folder
@@ -688,17 +688,17 @@ def main(argv):
 	try:
 		opts, args = getopt.getopt(argv,"hm:p:n:t:l:z:x:f:c:e:i:o:s:q:")
 	except getopt.GetoptError:
-		print('time python snapshot.py -p peak_list -n outputname -t index_set_count_thresh -s signal_list -l log2_sig -z scale_sig -x add_small_number -f function_list -m function_method -c function_color_list -e cell_development_tree -i input_folder -o output_folder -b script_folder')
+		print('time python3 snapshot.py -m master_peak_bed[optional] -p peak_signal_state_list[required] -n outputname[required] -t index_set_count_thresh[optional] -l log2_sig[optional] -z scale_sig[optional] -x add_small_number[optional] -f genome_chrom_size_file[required] -c function_color_list[required] -e cell_development_tree[required] -i input_folder[required] -o output_folder[required] -b script_folder[required] -q QDA_rescuing_round_number[optional]')
 		sys.exit(2)
 
 	for opt,arg in opts:
 		if opt=="-h":
-			print('time python snapshot.py -p peak_list -n outputname -t index_set_count_thresh -s signal_list -l log2_sig -z scale_sig -x add_small_number -f function_list -m function_method -c function_color_list -e cell_development_tree -i input_folder -o output_folder -b script_folder')
+			print('time python3 snapshot.py -m master_peak_bed[optional] -p peak_signal_state_list[required] -n outputname[required] -t index_set_count_thresh[optional] -l log2_sig[optional] -z scale_sig[optional] -x add_small_number[optional] -f genome_chrom_size_file[required] -c function_color_list[required] -e cell_development_tree[required] -i input_folder[required] -o output_folder[required] -b script_folder[required] -q QDA_rescuing_round_number[optional]')
 			sys.exit()
 		elif opt=="-m":
 			master_peak_bed=str(arg.strip())
 		elif opt=="-p":
-			peak_signal_list=str(arg.strip())
+			peak_signal_state_list=str(arg.strip())
 		elif opt=="-n":
 			outputname=str(arg.strip())
 		elif opt=="-t":
@@ -728,16 +728,16 @@ def main(argv):
 	############ Default parameters
 	###### required parameters
 	try:
-		print('User provide peak signal file list: -p '+str(peak_signal_list))
+		print('User provide peak-bed signal-bigWig state-bigBed file list: -p '+str(peak_signal_state_list))
 		print('User provide output filename: -n '+str(outputname))
-		print('User provide Epigenetic State bed file list: -f '+str(genome_size_file))
-		print('User provide Epigenetic State color list file: -fc'+str(function_color_file))
+		print('User provide genome chrom size file: -f '+str(genome_size_file))
+		print('User provide Epigenetic State color list file: -c'+str(function_color_file))
 		print('User provide pairwise cell-type tree file: -e '+str(cd_tree))
 		print('User provide input folder: -i '+str(input_folder))
 		print('User provide output folder: -o '+str(output_folder))
 		print('User provide source code folder: -s '+str(script_folder))
 	except NameError:
-		print('Missing required parameter(s): time python3 ../src/S3norm_pipeline.py -s /Users/universe/Documents/2018_BG/S3norm/src/ -t file_list.txt')	
+		print('Missing required parameter(s): time python3 snapshot.py -p peak_signal_state_list[required] -n outputname[required] -f genome_chrom_size_file[required] -c function_color_list[required] -e cell_development_tree[required] -i input_folder[required] -o output_folder[required] -b script_folder[required]')	
 		return()
 
 	###
@@ -780,7 +780,7 @@ def main(argv):
 
 
 	print('Starting Snapshot pipeline .......')
-	snapshot(master_peak_bed, peak_signal_list, genome_size_file, outputname, count_threshold, siglog2, sigscale, sigsmallnum, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num)
+	snapshot(master_peak_bed, peak_signal_state_list, genome_size_file, outputname, count_threshold, siglog2, sigscale, sigsmallnum, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num)
 
 if __name__=="__main__":
 	main(sys.argv[1:])

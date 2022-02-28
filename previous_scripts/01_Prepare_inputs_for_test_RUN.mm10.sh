@@ -9,7 +9,8 @@ mkdir function_label
 
 ##########################################
 ###### Download cCRE bed file (Master peak list) ######
-wget https://usevision.org/data/mm10/ideasJointMay2021/S3V2_IDEAS_mm10_ccre2.cCRE.M.notall0.bed
+wget wget https://usevision.org/data/hg38/IDEASstates/ideasJointMay2021/S3V2_IDEAS_hg38_r3_withHg38Mm10prior.state
+https://usevision.org/data/mm10/ideasJointMay2021/S3V2_IDEAS_mm10_ccre2.cCRE.M.notall0.bed
 ##########################################
 
 
