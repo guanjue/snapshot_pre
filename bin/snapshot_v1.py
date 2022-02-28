@@ -668,6 +668,7 @@ def snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, sig
 
 
 
+
 ##############################################
 # time python /Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/snapshot.py -p peak_list.txt -n atac_4cell -t 5 -s signal_list.txt -l F -z F -x 0.01 -f function_list.txt -m mostfreq -c function_color_list.txt -e cd_tree.txt -i /Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/input_data/ -o /Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/test_data/output_result/ -b /Users/gzx103/Documents/zhang_lab/projects/scripts/snapshot/bin/
 ##############################################
