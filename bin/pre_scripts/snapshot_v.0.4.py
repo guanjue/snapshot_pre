@@ -29,13 +29,12 @@ def write2d_array(array,output):
 ################################################################################################
 ### get convert bedtools window output to matrix of pk and intersect function label info
 def function_label_info(input_bedtools_window, id_col, lb_col, pk_col, function_col):
-	#data_info_matrix = function_label_info(mark_bed_file+'.tmp01.txt', cCRE_pk_id_col, IDEAS_state_label_col+cCRE_bed_colnum, cCRE_start_col, IDEAS_state_start_col)
+	#data_info_matrix = function_label_info(mark_bed_file+'.tmp01.txt', 4, 9, 2, 6)
 	data_info0=open(input_bedtools_window, 'r')
 	### read DNA region orders
 	data_info=[]
 	for records in data_info0:
 		tmp=[x.strip() for x in records.split('\t')]
-		#print(tmp)
 		### get intersect region; midpoint dist; TF peak length
 		if ((int(tmp[function_col-1]) - int(tmp[pk_col-1]))>=0) and ((int(tmp[function_col]) - int(tmp[pk_col]))<=0) :
 			### function Bin >= pk region
@@ -124,83 +123,75 @@ def get_cRE_function_state(data_info_matrix, id_col, lb_col, cover_col, middist_
 
 ################################################################################################
 ### get index/signal matrix
-def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, sort_sigbed, script_folder, signal_type='peak'):
-	#######
+def get_mark_matrix(peak_bed, peak_info_column, mark_list, output_file, method, sort_sigbed, script_folder, signal_col=None):
 	### sort input bed files
 	sort_bed_file = peak_bed + '.sort.bed'
 	call('cp ' + sort_bed_file + ' ' + output_file, shell=True)
 	##############################
 	### generate index mark matrix
 	mark_list_vec = open(mark_list, 'r')
+	celltype_list = []
 	for mark_bed in mark_list_vec:	
 		tmp = [x.strip() for x in mark_bed.split('\t')]
-		#print(tmp)
-		#######
 		### read bianry label file list
-		if signal_type!='peak':
-			mark_bed_bw_file = tmp[2]
-		elif signal_type=='peak':
-			mark_bed_bw_file = tmp[1]
-			### sort bianry label bed files
-			if sort_sigbed == 'T':
-				call('sort -k1,1 -k2,2n ' + mark_bed_bw_file + ' > ' + mark_bed_bw_file+'.sort.bed', shell=True)
-			else:
-				call('cp ' + mark_bed_bw_file + ' ' + mark_bed_bw_file+'.sort.bed', shell=True)
+		mark_bed_file = tmp[0]
+		print(mark_bed_file)
+		### add cell type name to cell type list
+		celltype_list.append(tmp[1])
+		#######
+		### sort bianry label bed files
+		if sort_sigbed == 'T':
+			call('sort -k1,1 -k2,2n ' + mark_bed_file + ' > ' + mark_bed_file+'.sort.bed', shell=True)
+		else:
+			call('cp ' + mark_bed_file + ' ' + mark_bed_file+'.sort.bed', shell=True)
 		#######
 		### use bedtools to generate the index/signal matrix
 		if method == 'intersect':
 			### used bedtools intersect to get the binary label of each peak
-			call('bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_bw_file+'.sort.bed' + ' > ' + mark_bed_bw_file+'.tmp01.txt', shell=True)
-			call('cat ' + mark_bed_bw_file+'.tmp01.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{if ($5<=1) print $0; else print $1, $2, $3, $4, 1}\' > ' + mark_bed_bw_file+'.tmp01b.txt', shell=True)
-			call('mv ' + mark_bed_bw_file+'.tmp01b.txt' + ' ' + mark_bed_bw_file+'.tmp01.txt', shell=True)
-			call('rm '+mark_bed_bw_file+'.sort.bed', shell=True)
+			call('bedtools intersect -c -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
+			call('cat ' + mark_bed_file+'.tmp01.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{if ($5<=1) print $0; else print $1, $2, $3, $4, 1}\' > ' + mark_bed_file+'.tmp01b.txt', shell=True)
+			call('mv ' + mark_bed_file+'.tmp01b.txt' + ' ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'map':
 			### used bedtools map to get the average signal of each peak
-			#call('bedtools map -c ' + str(signal_col) + ' -null 0 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_bw_file+'.tmp01.txt', shell=True)
-			call('bigWigAverageOverBed ' + mark_bed_bw_file + ' ' + sort_bed_file + ' ' + mark_bed_bw_file+'.tab', shell=True)
-			call('sort -k1,1n'+ ' ' + mark_bed_bw_file+'.tab' + ' > ' + mark_bed_bw_file+'.sort.tab', shell=True)
-			call('paste ' + sort_bed_file + ' ' + mark_bed_bw_file+'.sort.tab' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1, $2, $3, $4, $9}\' > ' + mark_bed_bw_file+'.tmp01.txt', shell=True)
-			call('rm'+ ' ' +mark_bed_bw_file+'.tab'+ ' ' +mark_bed_bw_file+'.sort.tab', shell=True)
+			call('bedtools map -c ' + str(signal_col) + ' -null 0 -o mean -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' > ' + mark_bed_file+'.tmp01.txt', shell=True)
 		elif method == 'window':
 			### used bedtools map to get the average signal of each peak
-			call('bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_bw_file+'.sort.bed' + ' -w 0 > ' + mark_bed_bw_file+'.tmp01.txt', shell=True)
+			call('bedtools window -a ' + sort_bed_file + ' -b ' + mark_bed_file+'.sort.bed' + ' -w 0 > ' + mark_bed_file+'.tmp01.txt', shell=True)
 			### convert bedtools window output to matrix of pk and intersect function label info (intersect region; midpoint dist; TF peak length)
-			data_info_matrix = function_label_info(mark_bed_bw_file+'.tmp01.txt', 4, 8, 2, 6)
+			data_info_matrix = function_label_info(mark_bed_file+'.tmp01.txt', 4, 9, 2, 6)
 			### get peak's function labels based on intersect region; midpoint dist; TF peak length
-			get_cRE_function_state(data_info_matrix, 1, 2, 3, 4, 5, sort_bed_file, 4, mark_bed_bw_file+'.tmp01.txt')
-			call('rm '+mark_bed_bw_file+'.sort.bed', shell=True)
+			get_cRE_function_state(data_info_matrix, 1, 2, 3, 4, 5, sort_bed_file, 4, mark_bed_file+'.tmp01.txt')
 		### cut the map number column
-		call('cut -f'+ str(peak_info_column) +" -d$'\t' " + mark_bed_bw_file+'.tmp01.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{if ($1=="NA") print 0; else print $1}\' > ' + mark_bed_bw_file+'.tmp02.txt', shell=True)
+		call('cut -f'+ str(peak_info_column) +" -d$'\t' " + mark_bed_file+'.tmp01.txt' + ' > ' + mark_bed_file+'.tmp02.txt', shell=True)
 		### cbind to matrix
-		call('paste ' + output_file + ' ' + mark_bed_bw_file+'.tmp02.txt' + ' > ' + output_file+'.tmp.txt' + ' && mv ' + output_file+'.tmp.txt ' + output_file, shell=True)
+		call('paste ' + output_file + ' ' + mark_bed_file+'.tmp02.txt' + ' > ' + output_file+'.tmp.txt' + ' && mv ' + output_file+'.tmp.txt ' + output_file, shell=True)
 		### remove tmp files
-		call('rm ' + mark_bed_bw_file+'.tmp01.txt' + ' ' + mark_bed_bw_file+'.tmp02.txt', shell=True)
+		#call('rm ' + mark_bed_file+'.tmp01.txt' + ' ' + mark_bed_file+'.tmp02.txt' + ' ' + mark_bed_file+'.sort.bed', shell=True)
 	mark_list_vec.close()
 
 ################################################################################################
 ### get merged peaks
-def merge_pk(peak_signal_list, outputname, script_folder):
+def merge_pk(peak_list, merge_pk_filename, script_folder):
 	import os.path
 	import os
-	### 
+	cwd = os.getcwd()
+	print(cwd)
 	if os.path.isfile('all_pk.bed'):
 		call('rm all_pk.bed', shell=True)
 	### read filenames in peak list
-	for file_info in open(peak_signal_list, 'r'):
-		filename = file_info.split('\t')[1]
+	for file_info in open(peak_list, 'r'):
+		filename = file_info.split('\t')[0]
 		call('cat ' + filename + ' >> all_pk.bed', shell=True)
 	### sort merge_pk
 	call('sort -k1,1 -k2,2n all_pk.bed > all_pk.sort.bed', shell=True)
 	### merge peak
-	outputfile_name = outputname + '.sort.bed'
+	outputfile_name = merge_pk_filename + '.sort.bed'
 	call('bedtools merge -i all_pk.sort.bed > ' + outputfile_name, shell=True)
 	### add pk id
-	call('cat ' + outputfile_name + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1, $2, $3, NR}\' > ' + outputfile_name + '.tmp.txt', shell=True)
+	call('cat ' + outputfile_name + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1, $2, $3, $1"_"$2"_"$3}\' > ' + outputfile_name + '.tmp.txt', shell=True)
 	call('mv ' + outputfile_name + '.tmp.txt ' + outputfile_name, shell=True)
 	### rm tmp files
 	call('rm all_pk.bed all_pk.sort.bed', shell=True)
-	print('cCRE number:')
-	call('wc -l ' + outputfile_name, shell=True)
 	### return filename
 	return(outputfile_name)
 
@@ -458,9 +449,9 @@ def get_index_set_function_matrix(function_matrix_file, pass_thresh_index_dict, 
 
 ################################################################################################
 ### index set sth some score matrix
-def get_index_set(outputname, signal_matrix_file, function_matrix_file, count_threshold, function_method, log2_sig, scale, smallnum, qda_num):
+def get_index_set(merge_pk_filename, signal_matrix_file, function_matrix_file, count_threshold, function_method, log2_sig, scale, smallnum, qda_num):
 	### read index matrix file
-	index_matrix_file = outputname + '.index.matrix.txt'
+	index_matrix_file = merge_pk_filename + '.index.matrix.txt'
 	index_matrix_od = read2d_array(index_matrix_file, 'str')
 	### bed info: chrom start end id
 	bed_info = index_matrix_od[:, 0:5]
@@ -476,7 +467,7 @@ def get_index_set(outputname, signal_matrix_file, function_matrix_file, count_th
 	##################
 	###### get index_set signal matrix
 	print('get index_set mean signal matrix...')
-	signal_matrix_file = outputname + '.signal.matrix.txt'
+	signal_matrix_file = merge_pk_filename + '.signal.matrix.txt'
 	index_set_mean_signal_info = get_index_set_mean_signal_matrix(signal_matrix_file, pass_thresh_index_dict, count_threshold, index_vector, qda_num, log2_sig, scale, smallnum)
 	index_set_mean_signal_matrix = index_set_mean_signal_info['index_set_mean_signal_matrix']
 	sort_id = index_set_mean_signal_info['sort_id']
@@ -485,22 +476,22 @@ def get_index_set(outputname, signal_matrix_file, function_matrix_file, count_th
 	index_signal_matrix = index_set_mean_signal_info['index_signal_matrix']
 	change_num_array = index_set_mean_signal_info['change_num_array']
 
-	write2d_array(change_num_array, outputname+'.change_num_array.txt')
-	write2d_array(index_set_mean_signal_matrix, outputname+'.meansig.txt')
-	write2d_array(index_signal_matrix, outputname+'.sig.txt')
+	write2d_array(change_num_array, merge_pk_filename+'.change_num_array.txt')
+	write2d_array(index_set_mean_signal_matrix, merge_pk_filename+'.meansig.txt')
+	write2d_array(index_signal_matrix, merge_pk_filename+'.sig.txt')
 	print('get index_set mean signal matrix...DONE')
 
 	##################
 	###### get index_set function matrix
 	print('get index_set most freqent functional state matrix...')
-	function_matrix_file = outputname + '.function.matrix.txt'
+	function_matrix_file = merge_pk_filename + '.function.matrix.txt'
 	if function_method == 'mostfreq':
 		### if functional information is most frequent state information
 		index_set_freqfun_info = get_index_set_function_matrix(function_matrix_file, pass_thresh_index_dict, sort_id, index_label_vector, index_set_vector)
 		index_set_mostfreqfun_matrix = index_set_freqfun_info['index_set_mostfreqfun_matrix']
 		index_fun_matrix = index_set_freqfun_info['index_fun_matrix']
-		write2d_array(index_set_mostfreqfun_matrix, outputname+'.indexset_fun.txt')
-		write2d_array(index_fun_matrix, outputname+'.fun.txt')
+		write2d_array(index_set_mostfreqfun_matrix, merge_pk_filename+'.indexset_fun.txt')
+		write2d_array(index_fun_matrix, merge_pk_filename+'.fun.txt')
 	elif function_method == 'mean':
 		### if functional information is numerical information
 		index_set_funcion_mean_signal_info = get_index_set_mean_signal_matrix(function_matrix_file, pass_thresh_index_dict, count_threshold, index_vector)
@@ -509,8 +500,8 @@ def get_index_set(outputname, signal_matrix_file, function_matrix_file, count_th
 		index_label_vector = index_set_funcion_mean_signal_info['index_label_vector']
 		index_set_vector = index_set_funcion_mean_signal_info['index_set_vector']
 		index_signal_matrix = index_set_funcion_mean_signal_info['index_signal_matrix']
-		write2d_array(index_set_funcion_mean_signal_matrix, outputname+'.indexset_fun.txt')
-		write2d_array(index_signal_matrix, outputname+'.fun.txt')	
+		write2d_array(index_set_funcion_mean_signal_matrix, merge_pk_filename+'.indexset_fun.txt')
+		write2d_array(index_signal_matrix, merge_pk_filename+'.fun.txt')	
 	else:
 		print('ERROR: get index_set most freqent functional state matrix...METHOD not found!!!')
 	print('get index_set most freqent functional state matrix...DONE')
@@ -519,7 +510,7 @@ def get_index_set(outputname, signal_matrix_file, function_matrix_file, count_th
 ################################################################################################
 
 ################################################################################################
-def snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, siglog2, sigscale, sigsmallnum, function_list, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num):
+def snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2, sigscale, sigsmallnum, function_list, function_method, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num):
 	### set working directory
 	os.chdir(input_folder)
 
@@ -533,59 +524,52 @@ def snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, sig
 	index_set_boarder_color = 'gray'
 	index_boarder_color = 'NA'
 
-	function_method = 'mostfreq'
-
-
 	################################################################################################
-	###### merge peak -> get sorted peak bed files
-	if master_peak_bed==None:
-		merge_pk_name = merge_pk(peak_signal_list, outputname, script_folder)
-	else:
-		call('cat '+master_peak_bed + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1, $2, $3, NR}\' > ' + outputname + '.sort.bed', shell=True)
-		merge_pk_name = outputname + '.sort.bed'
+	###### merge peak bed files
+	merge_pk_name = merge_pk(peak_list, merge_pk_filename, script_folder)
 	print('merged peak generated: ' + merge_pk_name + '... Done')
 
 	################################################################################################
 	###### get matrices
 	### get bed binary matrix
 	peak_label_column = 5
-	output_file_index = outputname + '.index.matrix.txt'
+	output_file_index = merge_pk_filename + '.index.matrix.txt'
 	sort_sigbed = 'T'
 	method = 'intersect'
 	print('get binary matrix...')
-	get_mark_matrix(outputname, peak_label_column, peak_signal_list, output_file_index, method, sort_sigbed, script_folder)
+	get_mark_matrix(merge_pk_filename, peak_label_column, peak_list, output_file_index, method, sort_sigbed, script_folder)
 
 	### get signal matrix
 	peak_signal_column = 5
-	output_file_signal = outputname + '.signal.matrix.txt'
-	signal_type = 'signal'
+	output_file_signal = merge_pk_filename + '.signal.matrix.txt'
+	signal_col = 5
 	sort_sigbed = 'T'
 	method = 'map'
 	print('get signal matrix...')
-	get_mark_matrix(outputname, peak_signal_column, peak_signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_type)
+	get_mark_matrix(merge_pk_filename, peak_signal_column, signal_list, output_file_signal, method, sort_sigbed, script_folder, signal_col)
 
 	### get function label matrix
 
-	output_file_function = outputname + '.function.matrix.txt'
-	sort_sigbed = 'F'
+	output_file_function = merge_pk_filename + '.function.matrix.txt'
+	sort_sigbed = 'T'
 	print('get function matrix...')
 	if function_method == 'mostfreq':
 		peak_function_column = 1
 		method = 'window'
-		get_mark_matrix(outputname, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
+		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder)
 	elif function_method == 'mean':
 		peak_function_column = 5
 		signal_col = 5
 		method = 'map'
-		get_mark_matrix(outputname, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder, signal_type)
+		get_mark_matrix(merge_pk_filename, peak_function_column, function_list, output_file_function, method, sort_sigbed, script_folder, signal_col)
 
 	###### plot index_count density plot
 	print('get NB_count_thresh')
-	call('time Rscript ' + script_folder + 'plot_density.R ' + outputname + '.index.matrix.txt' + ' ' + str(count_threshold) , shell=True)
+	call('time Rscript ' + script_folder + 'plot_density.R ' + merge_pk_filename + '.index.matrix.txt' + ' ' + str(count_threshold) , shell=True)
 	###### read NB count threshold
-	NB_count_thresh = int(read2d_array(outputname + '.index.matrix.txt.NB_count_thresh.txt', 'str')[0])
+	NB_count_thresh = int(read2d_array(merge_pk_filename + '.index.matrix.txt.NB_count_thresh.txt', 'str')[0])
 	###### if NB_count_thresh is greater than user provided count threshold, then use NB_count_thresh
-	if NB_count_thresh > 1000:
+	if NB_count_thresh > count_threshold:
 		print('replace user provide count_threshold by NB_count_thresh')
 		count_threshold = NB_count_thresh
 		print(count_threshold)
@@ -594,31 +578,24 @@ def snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, sig
 
 	################################################################################################
 	###### get index_set matrices
-	get_index_set(outputname, output_file_signal, output_file_function, count_threshold, function_method, siglog2, sigscale, sigsmallnum, qda_num)
+	get_index_set(merge_pk_filename, output_file_signal, output_file_function, count_threshold, function_method, siglog2, sigscale, sigsmallnum, qda_num)
 
 	################################################################################################
 	############ plot figures
 	###### for signal
-	### plot binary heatmaps 
-	print('use plot_rect to plot signal index & index set heatmap...')
-	call('cat ' + outputname+'.meansig.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1}\' | awk -F \'_\' -v OFS=\'\t\' \'{print $0}\'  > ' + outputname+'.index_binary_mat.txt.tmp1', shell=True)
-	call('cat ' + outputname+'.meansig.txt' + ' | awk -F \'\t\' -v OFS=\'\t\' \'{print $1}\' | awk -F \'_\' -v OFS=\'\t\' \'{print $0}\'  > ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
-	call('paste '+ outputname+'.index_binary_mat.txt.tmp1' + ' ' + outputname+'.index_binary_mat.txt.tmp2' + ' > ' + outputname+'.index_binary_mat.txt', shell=True)
-	call('rm '+ outputname+'.index_binary_mat.txt.tmp1' + ' ' + outputname+'.index_binary_mat.txt.tmp2', shell=True)
-	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.index_binary_mat.txt' + ' ' + outputname+'.index_binary_mat.png' + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + 'black' + ' ' + 'white' + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot heatmaps 
 	print('use plot_rect to plot signal index & index set heatmap...')
-	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + outputname+'.meansig.txt' + ' ' + outputname+'.meansig.png' + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.meansig.txt' + ' ' + merge_pk_filename+'.meansig.png' + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
 	### plot tree
 	print('plot mean signal of cell differentiation tree')
 	call('if [ ! -d signal_tree ]; then mkdir signal_tree; fi', shell=True)
-	call('time Rscript ' + script_folder + 'plot_tree.R ' + outputname+'.meansig.txt' + ' ' + cd_tree + ' ' + peak_signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
-	call('mv *tree.pdf signal_tree/', shell=True)
+	call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.meansig.txt' + ' ' + cd_tree + ' ' + signal_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+	call('mv *tree.png signal_tree/', shell=True)
 	### plot violin
 	print('plot signal violin plot & create index set bed files ...')
 	call('if [ ! -d signal_violin ]; then mkdir signal_violin; fi', shell=True)
-	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + outputname+'.sig.txt' + ' ' + peak_signal_list + ' ' + 'violin.pdf' + ' ' + outputname + '.sort.bed' , shell=True)
-	call('mv *violin.pdf signal_violin/', shell=True)
+	call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.sig.txt' + ' ' + signal_list + ' ' + 'violin.png' , shell=True)
+	call('mv *violin.png signal_violin/', shell=True)
 	call('if [ ! -d index_set_bed ]; then mkdir index_set_bed; fi', shell=True)
 	call('mv *.index_set.bed index_set_bed/', shell=True)
 
@@ -627,35 +604,49 @@ def snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, sig
 	if function_method == 'mostfreq':
 		### plot functional state
 		print('use plot_rect to plot function heatmap...')
-		call('time Rscript ' + script_folder + 'plot_rect.R ' + outputname+'.indexset_fun.txt' + ' ' + outputname+'.indexset_fun.png' + ' ' + function_list + ' ' + function_color_file + ' ' + str(index_set_fun_matrix_start_col) + ' ' + index_set_boarder_color, shell=True)
+		call('time Rscript ' + script_folder + 'plot_rect.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + merge_pk_filename+'.indexset_fun.png' + ' ' + function_list + ' ' + function_color_file + ' ' + str(index_set_fun_matrix_start_col) + ' ' + index_set_boarder_color, shell=True)
 		### plot tree
 		print('plot functional state of cell differentiation tree')
 		call('if [ ! -d fun_tree ]; then mkdir fun_tree; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_tree_multi_color.R ' + outputname+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_color_file + ' ' + function_list + ' ' + str(index_set_fun_matrix_start_col), shell=True)
-		call('mv *tree.pdf fun_tree/', shell=True)
+		call('time Rscript ' + script_folder + 'plot_tree_multi_color.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_color_file + ' ' + function_list + ' ' + str(index_set_fun_matrix_start_col), shell=True)
+		call('mv *tree.png fun_tree/', shell=True)
 		### plot bar
 		print('plot functional state barplot...')
 		call('if [ ! -d fun_bar ]; then mkdir fun_bar; fi', shell=True)
-		call('time Rscript ' + script_folder + 'plot_fun_bar.R ' + outputname+'.fun.txt' + ' ' + function_list + ' ' + function_color_file + ' ' + 'bar.pdf' , shell=True)
-		call('mv *bar.pdf fun_bar/', shell=True)
+		call('time Rscript ' + script_folder + 'plot_fun_bar.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + function_color_file + ' ' + 'bar.png' , shell=True)
+		call('mv *bar.png fun_bar/', shell=True)
+	elif function_method == 'mean':
+		### plot functional signal
+		print('use plot_rect to plot function mean signal heatmap...')
+		call('time Rscript ' + script_folder + 'plot_rect_sig.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + merge_pk_filename+'.indexset_fun.png' + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + index_set_boarder_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+		### plot tree
+		print('plot functional state of cell differentiation tree')
+		call('if [ ! -d fun_tree ]; then mkdir fun_tree; fi', shell=True)
+		call('time Rscript ' + script_folder + 'plot_tree.R ' + merge_pk_filename+'.indexset_fun.txt' + ' ' + cd_tree + ' ' + function_list + ' ' + str(index_set_sig_matrix_start_col) + ' ' + signal_high_color + ' ' + signal_low_color + ' ' + siglog2 + ' ' + str(sigsmallnum), shell=True)
+		call('mv *tree.png fun_tree/', shell=True)
+		### plot violin
+		print('plot functional state violin plot...')
+		call('if [ ! -d fun_bar ]; then mkdir fun_bar; fi', shell=True)
+		call('time Rscript ' + script_folder + 'plot_sig_violin.R ' + merge_pk_filename+'.fun.txt' + ' ' + function_list + ' ' + 'violin.png' , shell=True)
+		call('mv *violin.png fun_bar/', shell=True)
+
 
 	###### mv all output to output folder
 	call('if [ -d ' + output_folder + ' ]; then rm -r ' + output_folder + '; mkdir ' + output_folder + '; fi', shell=True)
 	call('if [ ! -d ' + output_folder + ' ]; then mkdir ' + output_folder + '; fi', shell=True)
 
 	### mv merge peak file
-	call('mv ' + outputname + '.sort.bed' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.sort.bed' + ' ' + output_folder, shell=True)
 	### mv matrix
-	call('mv ' + outputname + '.index.matrix.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.signal.matrix.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.function.matrix.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.index_binary_mat.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.meansig.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.sig.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.indexset_fun.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.fun.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.change_num_array.txt' + ' ' + output_folder, shell=True)
-	call('mv ' + outputname + '.index.matrix.txt.NB_count_thresh.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.index.matrix.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.signal.matrix.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.function.matrix.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.meansig.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.sig.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.indexset_fun.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.fun.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.change_num_array.txt' + ' ' + output_folder, shell=True)
+	call('mv ' + merge_pk_filename + '.index.matrix.txt.NB_count_thresh.txt' + ' ' + output_folder, shell=True)
 
 	### index set merged figures
 	call('mv *.png ' + output_folder, shell=True)
@@ -676,7 +667,7 @@ import getopt
 import sys
 def main(argv):
 	try:
-		opts, args = getopt.getopt(argv,"hm:p:n:t:l:z:x:f:c:e:i:o:s:q:")
+		opts, args = getopt.getopt(argv,"hp:n:t:s:l:z:x:f:m:c:e:i:o:b:q:")
 	except getopt.GetoptError:
 		print('time python snapshot.py -p peak_list -n outputname -t index_set_count_thresh -s signal_list -l log2_sig -z scale_sig -x add_small_number -f function_list -m function_method -c function_color_list -e cell_development_tree -i input_folder -o output_folder -b script_folder')
 		sys.exit(2)
@@ -685,14 +676,14 @@ def main(argv):
 		if opt=="-h":
 			print('time python snapshot.py -p peak_list -n outputname -t index_set_count_thresh -s signal_list -l log2_sig -z scale_sig -x add_small_number -f function_list -m function_method -c function_color_list -e cell_development_tree -i input_folder -o output_folder -b script_folder')
 			sys.exit()
-		elif opt=="-m":
-			master_peak_bed=str(arg.strip())
 		elif opt=="-p":
-			peak_signal_list=str(arg.strip())
+			peak_list=str(arg.strip())
 		elif opt=="-n":
-			outputname=str(arg.strip())
+			merge_pk_filename=str(arg.strip())
 		elif opt=="-t":
 			count_threshold=int(arg.strip())
+		elif opt=="-s":
+			signal_list=str(arg.strip())
 		elif opt=="-l":
 			siglog2=str(arg.strip())
 		elif opt=="-z":
@@ -701,6 +692,8 @@ def main(argv):
 			sigsmallnum=float(arg.strip())
 		elif opt=="-f":
 			function_list=str(arg.strip())
+		elif opt=="-m":
+			function_method=str(arg.strip())
 		elif opt=="-c":
 			function_color_file=str(arg.strip())
 		elif opt=="-e":
@@ -709,68 +702,12 @@ def main(argv):
 			input_folder=str(arg.strip())
 		elif opt=="-o":
 			output_folder=str(arg.strip())
-		elif opt=="-s":
+		elif opt=="-b":
 			script_folder=str(arg.strip())
 		elif opt=="-q":
 			qda_num=int(arg.strip())
 
-
-	############ Default parameters
-	###### required parameters
-	try:
-		print('User provide peak signal file list: -p '+str(peak_signal_list))
-		print('User provide output filename: -n '+str(outputname))
-		print('User provide Epigenetic State bed file list: -f '+str(function_list))
-		print('User provide Epigenetic State color list file: -fc'+str(function_color_file))
-		print('User provide pairwise cell-type tree file: -e '+str(cd_tree))
-		print('User provide input folder: -i '+str(input_folder))
-		print('User provide output folder: -o '+str(output_folder))
-		print('User provide source code folder: -s '+str(script_folder))
-	except NameError:
-		print('Missing required parameter(s): time python3 ../src/S3norm_pipeline.py -s /Users/universe/Documents/2018_BG/S3norm/src/ -t file_list.txt')	
-		return()
-
-	###
-	###### optional parameters
-	try:
-		print('User provide master_peak_bed: -m '+str(master_peak_bed))
-	except NameError:
-		print('Default: Generating Pool & Merged master_peak_bed file')
-		master_peak_bed = None
-
-	try:
-		print('User provide minimum number of bins per Index-set: -t '+str(count_threshold))
-	except NameError:
-		print('Default: The minimum number of bins per Index-set is set to 100')
-		count_threshold = 100
-
-	try:
-		print('add small number to avoid 0: -x '+str(sigsmallnum))
-	except NameError:
-		print('Default: add small number 0.01')
-		sigsmallnum = 0.01
-
-	try:
-		print('User decide if use log scale for signals: -l '+str(siglog2))
-	except NameError:
-		print('Default: use linear scale for signals')
-		siglog2 = 'F'
-
-	try:
-		print('User decide if convert signal to Z score: -z '+str(sigscale))
-	except NameError:
-		print('Default: use raw signals')
-		sigscale = 'F'
-
-	try:
-		print('User provide QDA round number: -q '+str(qda_num))
-	except NameError:
-		print('Default: 1 round of QDA rescue')
-		qda_num = 1
-
-
-	print('Starting Snapshot pipeline .......')
-	snapshot(master_peak_bed, peak_signal_list, outputname, count_threshold, siglog2, sigscale, sigsmallnum, function_list, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num)
+	snapshot(peak_list, merge_pk_filename, count_threshold, signal_list, siglog2, sigscale, sigsmallnum, function_list, function_method, function_color_file, cd_tree, input_folder, output_folder, script_folder, qda_num)
 
 if __name__=="__main__":
 	main(sys.argv[1:])
